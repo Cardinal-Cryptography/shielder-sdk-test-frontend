@@ -45,7 +45,7 @@ const ConfigSection = () => {
     <div className="">
       {/* Toggle Button for Mobile */}
       <Button
-        className="md:hidden fixed top-8 right-2 z-50"
+        className="md:hidden fixed top-1 right-2 z-50 font-semibold text-xs w-20 h-8"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         Config {isMobileMenuOpen ? <ArrowLeftCircle /> : <ArrowRightCircle />}
