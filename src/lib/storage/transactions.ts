@@ -39,6 +39,8 @@ const transactionsSchema = z.array(
     txHash: validateTxHash,
     block: validateBigInt,
     date: z.number(),
+    txFee: validateBigInt,
+    relayerFee: validateBigInt.optional(),
   }),
 );
 

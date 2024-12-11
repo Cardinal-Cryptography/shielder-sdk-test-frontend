@@ -2,6 +2,7 @@ import { clear } from "@/lib/storage/transactions";
 import { QueryClient } from "@tanstack/react-query";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { formatEther } from "viem";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,4 +36,14 @@ export const clearShielderClientStorage = async (queryClient: QueryClient) => {
   await queryClient.invalidateQueries({
     queryKey: ["shielderClient"],
   });
+};
+
+export const formatEtherTrim = (wei: bigint) => {
+  const ether = formatEther(wei);
+  // trim to 4 decimal places
+  const [whole, decimal] = ether.split(".");
+  if (!decimal) {
+    return whole;
+  }
+  return `${whole}.${decimal.slice(0, 4)}`;
 };

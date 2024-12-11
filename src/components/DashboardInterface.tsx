@@ -7,10 +7,9 @@ import useWasm from "@/lib/context/useWasm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useShielderSdk } from "@/lib/context/useShielderSdk";
 import { usePublicAccount } from "@/lib/context/usePublicAccount";
-import { formatEther } from "viem";
 import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
-import { clearShielderClientStorage } from "@/lib/utils";
+import { clearShielderClientStorage, formatEtherTrim } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
 import Faucet from "@/components/Faucet";
@@ -130,7 +129,7 @@ const DashboardInterface = () => {
                       Public Balance
                     </h2>
                     <p className="text-2xl font-semibold">
-                      {formatEther(publicBalance)}
+                      {formatEtherTrim(publicBalance)}
                     </p>
                     <p className="text-sm text-gray-500">{publicAddress}</p>
                   </CardContent>
@@ -142,7 +141,7 @@ const DashboardInterface = () => {
                       Private Balance
                     </h2>
                     <p className="text-2xl font-semibold">
-                      {formatEther(shielderBalance || 0n)}
+                      {formatEtherTrim(shielderBalance || 0n)}
                     </p>
                     <p className="text-sm text-gray-500">shielded account</p>
                   </CardContent>
