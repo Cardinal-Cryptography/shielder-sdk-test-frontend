@@ -1,22 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   defaultTestnet as defaultTestnetShielderConfig,
   empty as emptyShielderConfig,
-  save as saveShielderConfig,
   shielderConfigSchema,
 } from "@/lib/storage/shielderConfig";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
-import { useChainConfig } from "@/lib/context/useChainConfig";
 import {
-  defaultTestnet as defaultTestnetChainConfig,
   empty as emptyChainConfig,
-  save as saveChainConfig,
   chainConfigSchema,
+  defaultTestnet as defaultTestnetChainConfig,
 } from "@/lib/storage/chainConfig";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import { useConfig } from "@/lib/context/useConfig";
+import { useSaveConfig } from "@/lib/context/useSaveConfig";
 
 const capitalizeAndAddSpace = (str: string) => {
   return str
@@ -25,21 +22,44 @@ const capitalizeAndAddSpace = (str: string) => {
 };
 
 const ConfigSection = () => {
-  const queryClient = useQueryClient();
+  const { shielderConfig, chainConfig } = useConfig();
 
   const shielderOptions = Object.keys(shielderConfigSchema.shape);
-  const shielderConfig = useShielderConfig();
   const [newShielderConfig, setNewShielderConfig] = useState<
     typeof shielderConfig | undefined
   >(undefined);
 
   const chainOptions = Object.keys(chainConfigSchema.shape);
-  const chainConfig = useChainConfig();
   const [newChainConfig, setNewChainConfig] = useState<
     typeof chainConfig | undefined
   >(undefined);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const saveConfig = useSaveConfig();
+
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const handleSave = () => {
+    saveConfig.mutate({
+      shielderConfig:
+        newShielderConfig || shielderConfig || emptyShielderConfig(),
+      chainConfig: newChainConfig || chainConfig || emptyChainConfig(),
+    });
+
+    // Reset the states
+    setNewShielderConfig(undefined);
+    setNewChainConfig(undefined);
+
+    // Reset all input fields
+    if (formRef.current) {
+      const inputs = formRef.current.getElementsByTagName("input");
+      Array.from(inputs).forEach((input) => {
+        input.value = "";
+      });
+    }
+
+    alert("Configuration saved!");
+  };
 
   return (
     <div className="">
@@ -60,23 +80,22 @@ const ConfigSection = () => {
           md:static md:translate-x-0 md:h-[95vh] md:flex
         `}
       >
-        <div className="w-full">
+        <div className="w-full" ref={formRef}>
           <h1 className="text-xl font-bold mb-4">Configuration</h1>
           <Button
             className="w-full"
-            onClick={async () => {
-              saveShielderConfig(defaultTestnetShielderConfig());
-              saveChainConfig(defaultTestnetChainConfig());
+            onClick={() => {
+              saveConfig.mutate({
+                shielderConfig: defaultTestnetShielderConfig(),
+                chainConfig: defaultTestnetChainConfig(),
+              });
+              if (formRef.current) {
+                const inputs = formRef.current.getElementsByTagName("input");
+                Array.from(inputs).forEach((input) => {
+                  input.value = "";
+                });
+              }
               alert("Configuration saved!");
-              await queryClient.invalidateQueries({
-                queryKey: ["shielderConfig"],
-              });
-              await queryClient.invalidateQueries({
-                queryKey: ["chainConfig"],
-              });
-              await queryClient.invalidateQueries({
-                queryKey: ["shielderClient"],
-              });
             }}
           >
             Preload Testnet Defaults
@@ -98,9 +117,9 @@ const ConfigSection = () => {
                         : ""
                     }
                     onChange={(e) => {
-                      let cfg = newShielderConfig!;
+                      let cfg = { ...newShielderConfig! };
                       if (!newShielderConfig) {
-                        cfg = shielderConfig!;
+                        cfg = { ...shielderConfig! };
                       }
                       if (!cfg) {
                         cfg = emptyShielderConfig();
@@ -112,20 +131,7 @@ const ConfigSection = () => {
                 </div>
               ))}
               <div className="space-y-2">
-                <Button
-                  className="w-full"
-                  onClick={() => {
-                    saveShielderConfig(
-                      newShielderConfig ||
-                        shielderConfig ||
-                        emptyShielderConfig(),
-                    );
-                    alert("Configuration saved!");
-                    queryClient.invalidateQueries({
-                      queryKey: ["shielderClient"],
-                    });
-                  }}
-                >
+                <Button className="w-full" onClick={() => handleSave()}>
                   Save Configuration
                 </Button>
               </div>
@@ -147,9 +153,9 @@ const ConfigSection = () => {
                         : ""
                     }
                     onChange={(e) => {
-                      let cfg = newChainConfig!;
+                      let cfg = { ...newChainConfig! };
                       if (!newChainConfig) {
-                        cfg = chainConfig!;
+                        cfg = { ...chainConfig! };
                       }
                       if (!cfg) {
                         cfg = emptyChainConfig();
@@ -161,18 +167,7 @@ const ConfigSection = () => {
                 </div>
               ))}
               <div className="space-y-2">
-                <Button
-                  className="w-full"
-                  onClick={() => {
-                    saveChainConfig(
-                      newChainConfig || chainConfig || emptyChainConfig(),
-                    );
-                    alert("Configuration saved!");
-                    queryClient.invalidateQueries({
-                      queryKey: ["shielderClient"],
-                    });
-                  }}
-                >
+                <Button className="w-full" onClick={() => handleSave()}>
                   Save Configuration
                 </Button>
               </div>

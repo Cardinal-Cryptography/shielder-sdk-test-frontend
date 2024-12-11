@@ -5,7 +5,7 @@ import ConfigSection from "@/components/ConfigSection";
 import ShieldModal from "@/components/ShieldModal";
 import useWasm from "@/lib/context/useWasm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useShielderSdk } from "@/lib/context/useShielderSdk";
+import { useShielderClient } from "@/lib/context/useShielderClient";
 import { usePublicAccount } from "@/lib/context/usePublicAccount";
 import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
@@ -16,7 +16,7 @@ import Faucet from "@/components/Faucet";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
-  const { error } = useShielderSdk();
+  const { error } = useShielderClient();
   const { publicBalance, publicAddress } = usePublicAccount();
   const shielderBalance = useShielderBalance();
   const queryClient = useQueryClient();

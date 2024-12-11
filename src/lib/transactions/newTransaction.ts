@@ -1,5 +1,4 @@
-import { useChainConfig } from "@/lib/context/useChainConfig";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
+import { useConfig } from "@/lib/context/useConfig";
 import { getBlockchainClient } from "@/lib/getBlockchainClient";
 import { fromLocalStorage, save } from "@/lib/storage/transactions";
 import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
@@ -18,7 +17,6 @@ const findRelayerFee = (receipt: TransactionReceipt) => {
         data: log.data,
         topics: log.topics,
       });
-      console.log(decodedLog);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (decodedLog.args as any).fee as bigint;
     } catch {
@@ -30,8 +28,7 @@ const findRelayerFee = (receipt: TransactionReceipt) => {
 
 export const useInsertTransaction = () => {
   const queryClient = useQueryClient();
-  const chainConfig = useChainConfig();
-  const shielderConfig = useShielderConfig();
+  const { chainConfig, shielderConfig } = useConfig();
 
   const mutation = useMutation({
     mutationKey: ["insertTransaction"],

@@ -1,12 +1,10 @@
-import { useChainConfig } from "@/lib/context/useChainConfig";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
+import { useConfig } from "@/lib/context/useConfig";
 import { useQuery } from "@tanstack/react-query";
 import { createPublicClient, defineChain, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 export const usePublicAccount = () => {
-  const chainConfig = useChainConfig();
-  const shielderConfig = useShielderConfig();
+  const { shielderConfig, chainConfig } = useConfig();
   const { data: config } = useQuery({
     queryKey: ["publicBalance", chainConfig, shielderConfig],
     queryFn: async () => {

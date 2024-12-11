@@ -10,31 +10,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Shield } from "lucide-react";
-import { useShielderSdk } from "@/lib/context/useShielderSdk";
+import { useShielderClient } from "@/lib/context/useShielderClient";
 import { parseEther } from "viem";
 import { shieldActionGasLimit } from "@cardinal-cryptography/shielder-sdk";
-import { useChainConfig } from "@/lib/context/useChainConfig";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
 import { getBlockchainClient } from "@/lib/getBlockchainClient";
+import { useConfig } from "@/lib/context/useConfig";
 
 const ShieldModal = () => {
   const [amount, setAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const { shielderClient } = useShielderSdk();
-  const chainConfig = useChainConfig();
-  const shielderConfig = useShielderConfig();
+  const { shielderClient } = useShielderClient();
+  const { chainConfig, shielderConfig } = useConfig();
   const [isShielding, setIsShielding] = useState(false);
 
   const handleSubmit = async () => {
     // Here you would typically handle the shield action
-    console.log("Shield amount:", amount);
     const amountParsed = parseEther(amount);
     const walletClient = await getBlockchainClient(
       chainConfig!,
       shielderConfig!,
     );
     setIsShielding(true);
-    const txHash = await shielderClient!.shield(
+    await shielderClient!.shield(
       amountParsed,
       async (params) => {
         const txHash = await walletClient!.sendTransaction({
@@ -46,7 +43,6 @@ const ShieldModal = () => {
       walletClient!.account.address,
     );
     setIsShielding(false);
-    console.log("Shield transaction hash:", txHash);
     setIsOpen(false);
     setAmount("");
   };

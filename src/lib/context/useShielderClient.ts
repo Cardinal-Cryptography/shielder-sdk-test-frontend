@@ -1,5 +1,4 @@
-import { useChainConfig } from "@/lib/context/useChainConfig";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
+import { useConfig } from "@/lib/context/useConfig";
 import useWasm from "@/lib/context/useWasm";
 import { useInsertTransaction } from "@/lib/transactions/newTransaction";
 import { shielderClientStorage } from "@/lib/utils";
@@ -9,14 +8,19 @@ import {
 } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery } from "@tanstack/react-query";
 
-export const useShielderSdk = () => {
-  const shielderConfig = useShielderConfig();
-  const chainConfig = useChainConfig();
+export const useShielderClient = () => {
+  const { shielderConfig, chainConfig, kek } = useConfig();
   const insertTransaction = useInsertTransaction();
   const { isWasmLoaded } = useWasm();
 
   const { data: shielderClient, error } = useQuery({
-    queryKey: ["shielderClient", shielderConfig, chainConfig, isWasmLoaded],
+    queryKey: [
+      "shielderClient",
+      shielderConfig,
+      chainConfig,
+      isWasmLoaded,
+      kek,
+    ],
     queryFn: () => {
       if (!isWasmLoaded) {
         throw new Error("Wasm not loaded");
@@ -55,7 +59,6 @@ export const useShielderSdk = () => {
         shielderClientStorage,
         {
           onNewTransaction: async (tx: ShielderTransaction) => {
-            console.log("New transaction", tx);
             await insertTransaction.mutateAsync(tx);
           },
         },

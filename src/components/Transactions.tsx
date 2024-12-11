@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useChainConfig } from "@/lib/context/useChainConfig";
+import { useConfig } from "@/lib/context/useConfig";
 import { useTransactions } from "@/lib/transactions/useTransactions";
 import { formatEtherTrim } from "@/lib/utils";
 import { ArrowDownLeft, ArrowUpRight, User } from "lucide-react";
@@ -36,7 +36,7 @@ const formatHash = (hash: string) => {
 
 export const Transactions = () => {
   const transactions = useTransactions();
-  const chainConfig = useChainConfig();
+  const { chainConfig } = useConfig();
   if (!transactions || transactions.length === 0)
     return (
       <Card className="w-full">

@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { HandCoins } from "lucide-react";
-import { useShielderConfig } from "@/lib/context/useShielderConfig";
 import { useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useChainConfig } from "@/lib/context/useChainConfig";
 import { getBlockchainClient } from "@/lib/getBlockchainClient";
+import { useConfig } from "@/lib/context/useConfig";
 
 const Faucet = () => {
-  const chainConfig = useChainConfig();
-  const shielderConfig = useShielderConfig();
+  const { chainConfig, shielderConfig } = useConfig();
   const [isToppingUp, setIsToppingUp] = useState(false);
 
   const handleSubmit = async (cfToken: string) => {
