@@ -28,6 +28,10 @@ const Faucet = () => {
     }
   };
 
+  if (chainConfig && chainConfig.chainId !== "2039") {
+    return null;
+  }
+
   return (
     <div>
       {!isToppingUp ? (
@@ -38,7 +42,7 @@ const Faucet = () => {
           onClick={() => setIsToppingUp(true)}
         >
           <Send className="mr-2 h-5 w-5" />
-          Faucet
+          Faucet (Testnet)
         </Button>
       ) : (
         <Turnstile
