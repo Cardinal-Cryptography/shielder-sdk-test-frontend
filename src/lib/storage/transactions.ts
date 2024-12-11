@@ -20,17 +20,6 @@ const validateTxHash = z
   .regex(/^0x[0-9a-fA-F]{64}$/)
   .transform((val) => val as `0x${string}`);
 
-/**
- * 
-export type ShielderTransaction = {
-    type: "NewAccountNative" | "DepositNative" | "WithdrawNative";
-    amount: bigint;
-    to?: Address;
-    txHash: Hex;
-    block: bigint;
-};
- */
-
 const transactionsSchema = z.array(
   z.object({
     type: z.enum(["NewAccountNative", "DepositNative", "WithdrawNative"]),
