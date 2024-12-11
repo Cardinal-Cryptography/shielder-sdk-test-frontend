@@ -11,4 +11,8 @@ const version = parsed["importers"]["."]["dependencies"][
   .split("(")[0]
   .trim();
 
-fs.writeFileSync(".env", `VITE_SDK_VERSION=${version}\n`, { flag: "w" });
+fs.writeFileSync(
+  ".env",
+  `VITE_SDK_VERSION=${version}\nVITE_CF_KEY=${process.env.VITE_CF_KEY}\n`,
+  { flag: "w" },
+);

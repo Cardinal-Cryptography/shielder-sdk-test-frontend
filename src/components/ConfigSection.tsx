@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   defaultTestnet as defaultTestnetShielderConfig,
   empty as emptyShielderConfig,
@@ -17,6 +16,7 @@ import {
   chainConfigSchema,
 } from "@/lib/storage/chainConfig";
 import { useQueryClient } from "@tanstack/react-query";
+import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 
 const capitalizeAndAddSpace = (str: string) => {
   return str
@@ -39,18 +39,28 @@ const ConfigSection = () => {
     typeof chainConfig | undefined
   >(undefined);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="relative flex">
+    <div className="">
+      {/* Toggle Button for Mobile */}
+      <Button
+        className="md:hidden fixed top-8 right-2 z-50"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        Config {isMobileMenuOpen ? <ArrowLeftCircle /> : <ArrowRightCircle />}
+      </Button>
       {/* Config Panel */}
-      <ScrollArea className="h-[95vh]">
-        <div
-          className={`
-          transition-all duration-300 ease-in-out
-          border-l bg-gray-50
-          w-80 p-4
-          space-y-8
+      <div
+        className={`
+          fixed top-0 right-0 h-full w-80 bg-gray-50 border-l p-4 space-y-8
+          z-40 transform transition-transform duration-300 ease-in-out
+          overflow-y-auto
+          ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}
+          md:static md:translate-x-0 md:h-[95vh] md:flex
         `}
-        >
+      >
+        <div className="w-full">
           <h1 className="text-xl font-bold mb-4">Configuration</h1>
           <Button
             className="w-full"
@@ -180,7 +190,7 @@ const ConfigSection = () => {
             Reset the whole app
           </Button>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };

@@ -13,6 +13,7 @@ import { Transactions } from "@/components/Transactions";
 import { clearShielderClientStorage } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
+import Faucet from "@/components/Faucet";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
@@ -109,11 +110,6 @@ const DashboardInterface = () => {
                 <div className="space-y-2">
                   <ShieldModal />
                   <SendModal />
-                  {/* <Button className="w-full h-12" size="lg" variant="outline">
-                    <Send className="mr-2 h-5 w-5" />
-                    Send
-                  </Button> */}
-
                   <Button
                     className="w-full h-12"
                     size="lg"
@@ -125,6 +121,7 @@ const DashboardInterface = () => {
                     <RefreshCcw className="mr-2 h-5 w-5" />
                     Resync
                   </Button>
+                  <Faucet />
                 </div>
                 {/* Public Balance */}
                 <Card>
