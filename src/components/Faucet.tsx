@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { HandCoins } from "lucide-react";
 import { useShielderConfig } from "@/lib/context/useShielderConfig";
 import { useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -41,7 +41,7 @@ const Faucet = () => {
           variant="outline"
           onClick={() => setIsToppingUp(true)}
         >
-          <Send className="mr-2 h-5 w-5" />
+          <HandCoins className="mr-2 h-5 w-5" />
           Faucet (Testnet)
         </Button>
       ) : (

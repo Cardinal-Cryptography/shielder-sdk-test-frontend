@@ -81,7 +81,7 @@ const ConfigSection = () => {
           >
             Preload Testnet Defaults
           </Button>
-          <div>
+          <div className="mt-8">
             <h2 className="text-lg font-semibold mb-2">Shielder SDK</h2>
             <div className="space-y-4">
               {shielderOptions.map((option) => (
@@ -132,7 +132,7 @@ const ConfigSection = () => {
             </div>
           </div>
           {/* Chain Config */}
-          <div>
+          <div className="mt-8">
             <h2 className="text-lg font-semibold mb-2">Chain</h2>
             <div className="space-y-4">
               {chainOptions.map((option) => (
@@ -179,7 +179,7 @@ const ConfigSection = () => {
             </div>
           </div>
           <Button
-            className="w-full"
+            className="w-full mb-4 mt-8"
             onClick={async () => {
               localStorage.clear();
               // reload the page
