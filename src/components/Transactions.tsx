@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useConfig } from "@/lib/context/useConfig";
 import { useTransactions } from "@/lib/transactions/useTransactions";
 import { formatEtherTrim } from "@/lib/utils";
 import { ArrowDownLeft, ArrowUpRight, User } from "lucide-react";
+import { useChainId, useChains } from "wagmi";
 
 const TransactionIcon = ({ type }: { type: string }) => {
   switch (type) {
@@ -36,7 +36,9 @@ const formatHash = (hash: string) => {
 
 export const Transactions = () => {
   const transactions = useTransactions();
-  const { chainConfig } = useConfig();
+  const chains = useChains();
+  const chainId = useChainId();
+  const currentChainConfig = chains.find((c) => c.id === chainId);
   if (!transactions || transactions.length === 0)
     return (
       <Card className="w-full">
@@ -76,7 +78,7 @@ export const Transactions = () => {
                         <a
                           className="font-mono text-blue-500 hover:underline"
                           href={
-                            chainConfig!.explorerUrl +
+                            currentChainConfig!.blockExplorers!.default.url +
                             "/tx/" +
                             transaction.txHash
                           }
@@ -94,7 +96,7 @@ export const Transactions = () => {
                           <a
                             className="font-mono text-blue-500 hover:underline"
                             href={
-                              chainConfig!.explorerUrl +
+                              currentChainConfig!.blockExplorers!.default.url +
                               "/address/" +
                               transaction.to
                             }
@@ -109,7 +111,10 @@ export const Transactions = () => {
                 </div>
                 <div className="text-right">
                   <div className="font-medium">
-                    {formatEtherTrim(transaction.amount)} AZERO
+                    {formatEtherTrim(
+                      transaction.amount - (transaction.relayerFee ?? 0n),
+                    )}{" "}
+                    AZERO
                   </div>
                   <div className="text-sm text-gray-500">
                     Block #{transaction.block.toString()}

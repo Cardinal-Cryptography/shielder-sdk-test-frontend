@@ -13,34 +13,30 @@ import { Loader2, Shield } from "lucide-react";
 import { useShielderClient } from "@/lib/context/useShielderClient";
 import { parseEther } from "viem";
 import { shieldActionGasLimit } from "@cardinal-cryptography/shielder-sdk";
-import { getBlockchainClient } from "@/lib/getBlockchainClient";
-import { useConfig } from "@/lib/context/useConfig";
+import { useAccount, useSendTransaction } from "wagmi";
 
 const ShieldModal = () => {
   const [amount, setAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { shielderClient } = useShielderClient();
-  const { chainConfig, shielderConfig } = useConfig();
+  const { sendTransactionAsync } = useSendTransaction();
+  const { address: walletAddress } = useAccount();
   const [isShielding, setIsShielding] = useState(false);
 
   const handleSubmit = async () => {
     // Here you would typically handle the shield action
     const amountParsed = parseEther(amount);
-    const walletClient = await getBlockchainClient(
-      chainConfig!,
-      shielderConfig!,
-    );
     setIsShielding(true);
     await shielderClient!.shield(
       amountParsed,
       async (params) => {
-        const txHash = await walletClient!.sendTransaction({
+        const txHash = await sendTransactionAsync!({
           ...params,
           gas: shieldActionGasLimit,
         });
         return txHash;
       },
-      walletClient!.account.address,
+      walletAddress!,
     );
     setIsShielding(false);
     setIsOpen(false);
@@ -82,9 +78,7 @@ const ShieldModal = () => {
           <Button
             onClick={handleSubmit}
             className="w-full"
-            disabled={
-              !amount || !shielderClient || !chainConfig || !shielderConfig
-            }
+            disabled={!amount || !shielderClient || !walletAddress}
           >
             {isShielding ? (
               // spinning loader

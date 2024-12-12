@@ -19,7 +19,7 @@ const SendModal = () => {
   const [addressTo, setAddressTo] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { shielderClient } = useShielderClient();
-  const { chainConfig, shielderConfig } = useConfig();
+  const { shielderConfig } = useConfig();
   const [isSending, setIsSending] = useState(false);
 
   const handleSubmit = async () => {
@@ -87,9 +87,7 @@ const SendModal = () => {
           <Button
             onClick={handleSubmit}
             className="w-full"
-            disabled={
-              !amount || !shielderClient || !chainConfig || !shielderConfig
-            }
+            disabled={!amount || !shielderClient || !shielderConfig}
           >
             {isSending ? (
               // spinning loader

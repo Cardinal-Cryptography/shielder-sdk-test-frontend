@@ -8,7 +8,6 @@ export const shielderConfigSchema = z.object({
   relayerUrl: z.string().nullable(),
   relayerAddress: z.string().nullable(),
   shielderSeedKey: z.string().nullable(),
-  publicAccountKey: z.string().nullable(),
 });
 
 export type ShielderConfig = z.infer<typeof shielderConfigSchema>;
@@ -18,7 +17,6 @@ export const empty = (): ShielderConfig => ({
   relayerUrl: null,
   relayerAddress: null,
   shielderSeedKey: null,
-  publicAccountKey: null,
 });
 
 export const fromLocalStorage = (): ShielderConfig | null => {
@@ -48,6 +46,5 @@ export const defaultTestnet = (): ShielderConfig => {
     relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
     relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
     shielderSeedKey: randomPrivateKey,
-    publicAccountKey: randomPrivateKey,
   };
 };

@@ -1,8 +1,4 @@
 import {
-  ChainConfig,
-  save as saveChainConfig,
-} from "@/lib/storage/chainConfig";
-import {
   save as saveShielderConfig,
   ShielderConfig,
 } from "@/lib/storage/shielderConfig";
@@ -15,14 +11,11 @@ export const useSaveConfig = () => {
   const mutation = useMutation({
     mutationKey: ["saveConfig"],
     mutationFn: async ({
-      chainConfig,
       shielderConfig,
     }: {
-      chainConfig: ChainConfig;
       shielderConfig: ShielderConfig;
     }) => {
       saveShielderConfig(shielderConfig);
-      saveChainConfig(chainConfig);
       clear();
       localStorage.removeItem("shielderClient");
     },

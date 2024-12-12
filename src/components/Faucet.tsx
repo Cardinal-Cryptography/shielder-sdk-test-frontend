@@ -2,22 +2,20 @@ import { Button } from "@/components/ui/button";
 import { HandCoins } from "lucide-react";
 import { useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { getBlockchainClient } from "@/lib/getBlockchainClient";
-import { useConfig } from "@/lib/context/useConfig";
+import { useAccount, useChainId } from "wagmi";
 
 const Faucet = () => {
-  const { chainConfig, shielderConfig } = useConfig();
   const [isToppingUp, setIsToppingUp] = useState(false);
+  const { address } = useAccount();
+  const chainId = useChainId();
 
   const handleSubmit = async (cfToken: string) => {
-    const address = (await getBlockchainClient(chainConfig!, shielderConfig!))
-      .account.address;
     const response = await fetch("/api/faucet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ address, cfToken }),
+      body: JSON.stringify({ address: address!, cfToken }),
     });
     setIsToppingUp(false);
 
@@ -26,7 +24,7 @@ const Faucet = () => {
     }
   };
 
-  if (chainConfig && chainConfig.chainId !== "2039") {
+  if (chainId !== 2039) {
     return null;
   }
 

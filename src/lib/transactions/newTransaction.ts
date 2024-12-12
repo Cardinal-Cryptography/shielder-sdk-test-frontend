@@ -1,9 +1,8 @@
-import { useConfig } from "@/lib/context/useConfig";
-import { getBlockchainClient } from "@/lib/getBlockchainClient";
 import { fromLocalStorage, save } from "@/lib/storage/transactions";
 import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { decodeEventLog, parseAbi, TransactionReceipt } from "viem";
+import { usePublicClient } from "wagmi";
 
 const findRelayerFee = (receipt: TransactionReceipt) => {
   const relayerEvent = [
@@ -28,27 +27,26 @@ const findRelayerFee = (receipt: TransactionReceipt) => {
 
 export const useInsertTransaction = () => {
   const queryClient = useQueryClient();
-  const { chainConfig, shielderConfig } = useConfig();
+  const publicClient = usePublicClient();
 
   const mutation = useMutation({
     mutationKey: ["insertTransaction"],
     mutationFn: async (transaction: ShielderTransaction) => {
+      if (!publicClient) {
+        throw new Error("Public client not available");
+      }
       const currentTransactions = fromLocalStorage() ?? [];
       // if transaction already exists, do not insert it again
       if (currentTransactions.find((t) => t.txHash === transaction.txHash)) {
         return currentTransactions;
       }
-      const walletClient = await getBlockchainClient(
-        chainConfig!,
-        shielderConfig!,
-      );
       const blockTimestampSeconds = (
-        await walletClient.getBlock({
+        await publicClient.getBlock({
           blockNumber: transaction.block,
         })
       ).timestamp;
 
-      const txReceipt = await walletClient.getTransactionReceipt({
+      const txReceipt = await publicClient.getTransactionReceipt({
         hash: transaction.txHash,
       });
       const txFee = txReceipt.gasUsed * txReceipt.effectiveGasPrice;
