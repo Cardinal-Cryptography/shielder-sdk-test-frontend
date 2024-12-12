@@ -44,9 +44,9 @@ export const clear = () => {
 export const defaultTestnet = (): ShielderConfig => {
   const randomPrivateKey = generatePrivateKey();
   return {
-    shielderContractAddress: "0x77D966DcAdD93227d34919e93B1169453Eeca86B",
-    relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
-    relayerAddress: "0xF2Fd9bc1e9DC1863f923aCa59df265134DD65AB7",
+    shielderContractAddress: "0x0CCf21fd6a2574D7186d94970F8D6E63a545879a",
+    relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
+    relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
     shielderSeedKey: randomPrivateKey,
     publicAccountKey: randomPrivateKey,
   };

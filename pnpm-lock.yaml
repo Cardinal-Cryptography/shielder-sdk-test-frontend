@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@cardinal-cryptography/shielder-sdk':
-        specifier: ^0.0.9
-        version: 0.0.9(typescript@5.6.3)
+        specifier: ~0.1.0
+        version: 0.1.0(typescript@5.6.3)
       '@marsidev/react-turnstile':
         specifier: ^1.1.0
         version: 1.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -204,8 +204,8 @@ packages:
     resolution: {integrity: sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==}
     engines: {node: '>=6.9.0'}
 
-  '@cardinal-cryptography/shielder-sdk@0.0.9':
-    resolution: {integrity: sha512-Yz1O1ZwF91lN2tATmxKz/QFJdZJsTNBZjU/Xzvd54j2jMbcazwJ4b9bJuV2pd9MiwDx2PwTKq2OGK+DhB+gQWw==}
+  '@cardinal-cryptography/shielder-sdk@0.1.0':
+    resolution: {integrity: sha512-BjJaFH9+4Ih+Pwj7SxKKTaqYioyow3/7fIqnjKfyow78eExSSIuwnn05TrxYF1r+haw1tWSiOJTvmGhCBq95yA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -2137,7 +2137,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@cardinal-cryptography/shielder-sdk@0.0.9(typescript@5.6.3)':
+  '@cardinal-cryptography/shielder-sdk@0.1.0(typescript@5.6.3)':
     dependencies:
       async-mutex: 0.5.0
       comlink: 4.4.2
