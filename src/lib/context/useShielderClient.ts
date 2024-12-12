@@ -9,9 +9,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
 import { sha256 } from "viem";
-import { useChainId, useChains } from "wagmi";
+import { useChains } from "wagmi";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 import { useToast } from "@/lib/context/useToast";
+import { useChainId } from "@/lib/context/useChainId";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -40,7 +41,7 @@ export const useShielderClient = () => {
   const { toast } = useToast();
 
   const { data: shielderClient, error } = useQuery({
-    queryKey: ["shielderClient", shielderConfig, isWasmLoaded, kek],
+    queryKey: ["shielderClient", shielderConfig, isWasmLoaded, chainId, kek],
     queryFn: () => {
       if (!isWasmLoaded) {
         throw new Error("Wasm not loaded");
@@ -64,6 +65,9 @@ export const useShielderClient = () => {
       }
       if (!shielderConfig.relayerUrl) {
         throw new Error("Relayer URL not available");
+      }
+      if (!chainId) {
+        throw new Error("Chain ID not available");
       }
       const client = createShielderClient(
         deriveShielderPrivateKey(shielderConfig.shielderSeedMnemonic),

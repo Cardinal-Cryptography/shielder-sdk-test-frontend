@@ -51,3 +51,7 @@ export const formatEtherTrim = (wei: bigint) => {
 export const formatHash = (hash: string) => {
   return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
 };
+
+export const accountChainIdSupported = (chainId: number | undefined) => {
+  return chainId === undefined || chainId === 2039 || chainId === 41455;
+};

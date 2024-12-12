@@ -6,35 +6,36 @@ import ShieldModal from "@/components/ShieldModal";
 import useWasm from "@/lib/context/useWasm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useShielderClient } from "@/lib/context/useShielderClient";
-import { usePublicAccount } from "@/lib/context/usePublicAccount";
 import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
 import {
+  accountChainIdSupported,
   clearShielderClientStorage,
   formatEtherTrim,
-  formatHash,
 } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
 import Faucet from "@/components/Faucet";
 import { ConnectKitButton } from "connectkit";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { Switch } from "@/components/ui/switch";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import { useConfig } from "@/lib/context/useConfig";
-import { CopyContent } from "@/components/ui/copy-content";
+import { PublicBalance } from "@/components/PublicBalance";
+import { useChain } from "@/lib/context/useChain";
+import { useSwitchChain } from "@/lib/context/useSwitchChain";
+import { useAccount } from "wagmi";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
   const { error } = useShielderClient();
-  const { publicBalance, publicAddress } = usePublicAccount();
   const shielderBalance = useShielderBalance();
   const queryClient = useQueryClient();
-  const chainId = useChainId();
-  const account = useAccount();
   const { shielderConfig } = useConfig();
   const saveConfig = useSaveConfig();
-  const { switchChainAsync } = useSwitchChain();
+  // const { switchChainAsync } = useSwitchChain();
+  const { chainId: accountChainId } = useAccount();
+  const switchChain = useSwitchChain();
+  const currentChain = useChain();
 
   const header = (children: React.ReactNode) => {
     return (
@@ -62,17 +63,24 @@ const DashboardInterface = () => {
                 </AlertDescription>
               </Alert>
               <div className="flex justify-center space-x-8">
-                <ConnectKitButton />
+                <div className="flex flex-col justify-center items-center">
+                  <ConnectKitButton />
+                  {accountChainId ? (
+                    !accountChainIdSupported(accountChainId) ? (
+                      <p className="text-red-500">Unsupported chain!</p>
+                    ) : null
+                  ) : null}
+                </div>
                 <div className="flex items-center space-x-2">
                   <p> Testnet </p>
                   <Switch
                     className="data-[state=unchecked]:bg-green-500 data-[state=checked]:bg-red-500"
-                    checked={chainId !== 2039}
+                    checked={currentChain !== "testnet"}
                     onCheckedChange={async (checked) => {
                       if (checked) {
-                        await switchChainAsync({ chainId: 41455 });
+                        switchChain.mutate("mainnet");
                       } else {
-                        await switchChainAsync({ chainId: 2039 });
+                        switchChain.mutate("testnet");
                       }
                       console.log(shielderConfig);
                       if (shielderConfig) {
@@ -108,15 +116,15 @@ const DashboardInterface = () => {
     );
   }
 
-  if (account.chainId !== 2039 && account.chainId !== 41455) {
-    return header(
-      <div className="h-screen flex items-center justify-center">
-        <p className="text-lg font-semibold">
-          Unsupported chain. Please switch to Aleph Testnet or Mainnet.
-        </p>
-      </div>,
-    );
-  }
+  // if (!chainId) {
+  //   return header(
+  //     <div className="h-screen flex items-center justify-center">
+  //       <p className="text-lg font-semibold">
+  //         Unsupported chain. Please switch to Aleph Testnet or Mainnet.
+  //       </p>
+  //     </div>,
+  //   );
+  // }
 
   if (error) {
     return header(
@@ -156,20 +164,7 @@ const DashboardInterface = () => {
               <Faucet />
             </div>
             {/* Public Balance */}
-            <Card>
-              <CardContent className="p-4">
-                <h2 className="text-lg font-semibold mb-4">Public Balance</h2>
-                <p className="text-2xl font-semibold">
-                  {formatEtherTrim(publicBalance)}
-                </p>
-                <div className="flex">
-                  <p className="text-sm text-gray-500">
-                    {formatHash(publicAddress)}
-                  </p>
-                  <CopyContent content={publicAddress} />
-                </div>
-              </CardContent>
-            </Card>
+            <PublicBalance />
             {/* Private Balance */}
             <Card>
               <CardContent className="p-4">

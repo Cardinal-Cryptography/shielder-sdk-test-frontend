@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { HandCoins } from "lucide-react";
 import { useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useAccount, useChainId } from "wagmi";
+import { useAccount } from "wagmi";
+import { useChainId } from "@/lib/context/useChainId";
 
 const Faucet = () => {
   const [isToppingUp, setIsToppingUp] = useState(false);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const chainId = useChainId();
 
   const handleSubmit = async (cfToken: string) => {
@@ -25,6 +26,9 @@ const Faucet = () => {
   };
 
   if (chainId !== 2039) {
+    return null;
+  }
+  if (!isConnected) {
     return null;
   }
 

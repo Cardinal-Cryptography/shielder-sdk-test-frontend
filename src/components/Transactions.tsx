@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useChainId } from "@/lib/context/useChainId";
 import { useTransactions } from "@/lib/transactions/useTransactions";
 import { formatEtherTrim, formatHash } from "@/lib/utils";
 import { ArrowDownLeft, ArrowUpRight, User } from "lucide-react";
-import { useChainId, useChains } from "wagmi";
+import { useChains } from "wagmi";
 
 const TransactionIcon = ({ type }: { type: string }) => {
   switch (type) {

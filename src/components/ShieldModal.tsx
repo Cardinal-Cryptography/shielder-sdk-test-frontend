@@ -16,13 +16,18 @@ import { shieldActionGasLimit } from "@cardinal-cryptography/shielder-sdk";
 import { useAccount, useSendTransaction } from "wagmi";
 import { useLatestProof } from "@/lib/context/useLatestProof";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
+import { accountChainIdSupported } from "@/lib/utils";
 
 const ShieldModal = () => {
   const [amount, setAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { shielderClient } = useShielderClient();
   const { sendTransactionAsync } = useSendTransaction();
-  const { address: walletAddress } = useAccount();
+  const {
+    address: walletAddress,
+    isConnected,
+    chainId: accountChainId,
+  } = useAccount();
   const [isShielding, setIsShielding] = useState(false);
   const latestProof = useLatestProof();
   const { reset: resetLatestProof } = useSaveLatestProof();
@@ -31,21 +36,25 @@ const ShieldModal = () => {
     // Here you would typically handle the shield action
     const amountParsed = parseEther(amount);
     setIsShielding(true);
-    await shielderClient!.shield(
-      amountParsed,
-      async (params) => {
-        const txHash = await sendTransactionAsync!({
-          ...params,
-          gas: shieldActionGasLimit,
-        }).catch((e) => {
-          setIsShielding(false);
-          setIsOpen(false);
-          throw e;
-        });
-        return txHash;
-      },
-      walletAddress!,
-    );
+    try {
+      await shielderClient!.shield(
+        amountParsed,
+        async (params) => {
+          const txHash = await sendTransactionAsync!({
+            ...params,
+            gas: shieldActionGasLimit,
+          }).catch((e) => {
+            throw e;
+          });
+          return txHash;
+        },
+        walletAddress!,
+      );
+    } catch (e) {
+      console.error(e);
+      setIsShielding(false);
+      setIsOpen(false);
+    }
     setIsShielding(false);
     setIsOpen(false);
     setAmount("");
@@ -62,10 +71,17 @@ const ShieldModal = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="w-full h-12" size="lg">
-          <Shield className="mr-2 h-5 w-5" />
-          Shield
-        </Button>
+        {isConnected && accountChainIdSupported(accountChainId) ? (
+          <Button className="w-full h-12" size="lg">
+            <Shield className="mr-2 h-5 w-5" />
+            Shield
+          </Button>
+        ) : (
+          <Button className="w-full h-12" size="lg" disabled>
+            <Shield className="mr-2 h-5 w-5" />
+            Shield (Connect Wallet)
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
