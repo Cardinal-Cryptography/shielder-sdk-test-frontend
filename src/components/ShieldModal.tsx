@@ -14,6 +14,8 @@ import { useShielderClient } from "@/lib/context/useShielderClient";
 import { parseEther } from "viem";
 import { shieldActionGasLimit } from "@cardinal-cryptography/shielder-sdk";
 import { useAccount, useSendTransaction } from "wagmi";
+import { useLatestProof } from "@/lib/context/useLatestProof";
+import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 
 const ShieldModal = () => {
   const [amount, setAmount] = useState("");
@@ -22,6 +24,8 @@ const ShieldModal = () => {
   const { sendTransactionAsync } = useSendTransaction();
   const { address: walletAddress } = useAccount();
   const [isShielding, setIsShielding] = useState(false);
+  const latestProof = useLatestProof();
+  const { reset: resetLatestProof } = useSaveLatestProof();
 
   const handleSubmit = async () => {
     // Here you would typically handle the shield action
@@ -33,6 +37,10 @@ const ShieldModal = () => {
         const txHash = await sendTransactionAsync!({
           ...params,
           gas: shieldActionGasLimit,
+        }).catch((e) => {
+          setIsShielding(false);
+          setIsOpen(false);
+          throw e;
         });
         return txHash;
       },
@@ -44,7 +52,15 @@ const ShieldModal = () => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        resetLatestProof.mutate();
+        setIsOpen(open);
+        setIsShielding(false);
+        setAmount("");
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="w-full h-12" size="lg">
           <Shield className="mr-2 h-5 w-5" />
@@ -82,11 +98,19 @@ const ShieldModal = () => {
           >
             {isShielding ? (
               // spinning loader
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <div>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              </div>
             ) : (
-              <Shield className="mr-2 h-4 w-4" />
+              <div>
+                <Shield className="mr-2 h-4 w-4" />
+              </div>
             )}
-            Shield Assets
+            {isShielding
+              ? !latestProof
+                ? "Generating Proof..."
+                : "Confirm transaction in Wallet"
+              : "Shield Assets"}
           </Button>
         </div>
       </DialogContent>

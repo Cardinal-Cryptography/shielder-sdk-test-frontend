@@ -13,6 +13,8 @@ import { Loader2, Send } from "lucide-react";
 import { useShielderClient } from "@/lib/context/useShielderClient";
 import { parseEther } from "viem";
 import { useConfig } from "@/lib/context/useConfig";
+import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
+import { useLatestProof } from "@/lib/context/useLatestProof";
 
 const SendModal = () => {
   const [amount, setAmount] = useState("");
@@ -21,6 +23,8 @@ const SendModal = () => {
   const { shielderClient } = useShielderClient();
   const { shielderConfig } = useConfig();
   const [isSending, setIsSending] = useState(false);
+  const latestProof = useLatestProof();
+  const { reset: resetLatestProof } = useSaveLatestProof();
 
   const handleSubmit = async () => {
     // Here you would typically handle the shield action
@@ -39,16 +43,25 @@ const SendModal = () => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        resetLatestProof.mutate();
+        setIsOpen(open);
+        setIsSending(false);
+        setAmount("");
+        setAddressTo("");
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="w-full h-12" size="lg">
           <Send className="mr-2 h-5 w-5" />
-          Send
+          Withdraw
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Send Assets</DialogTitle>
+          <DialogTitle>Withdraw Assets</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
@@ -80,7 +93,6 @@ const SendModal = () => {
                 onChange={(e) => {
                   setAddressTo(e.target.value);
                 }}
-                className="pr-12"
               />
             </div>
           </div>
@@ -95,7 +107,11 @@ const SendModal = () => {
             ) : (
               <Send className="mr-2 h-4 w-4" />
             )}
-            Send Assets
+            {isSending
+              ? !latestProof
+                ? "Generating Proof..."
+                : "Sending..."
+              : "Withdraw Assets"}
           </Button>
         </div>
       </DialogContent>

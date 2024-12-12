@@ -9,11 +9,20 @@ import {
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import { useConfig } from "@/lib/context/useConfig";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
+import { CopyContent } from "@/components/ui/copy-content";
 
 const capitalizeAndAddSpace = (str: string) => {
   return str
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str) => str.toUpperCase());
+};
+
+const maskMnemonic = (mnemonic: string) => {
+  if (!mnemonic) return "";
+  return mnemonic
+    .split(" ")
+    .map(() => "••••••")
+    .join(" ");
 };
 
 const ConfigSection = () => {
@@ -92,16 +101,36 @@ const ConfigSection = () => {
             <div className="space-y-4">
               {shielderOptions.map((option) => (
                 <div key={option}>
-                  <label className="text-sm font-medium mb-1 block">
-                    {capitalizeAndAddSpace(option)}
-                  </label>
+                  <div className="flex">
+                    <label className="text-sm font-medium mb-1 block">
+                      {capitalizeAndAddSpace(option)}
+                    </label>
+
+                    <CopyContent
+                      content={
+                        shielderConfig
+                          ? shielderConfig[
+                              option as keyof typeof shielderConfig
+                            ] || ""
+                          : ""
+                      }
+                    />
+                  </div>
                   <Input
                     placeholder={
-                      shielderConfig
-                        ? shielderConfig[
-                            option as keyof typeof shielderConfig
-                          ] || ""
-                        : ""
+                      option === "shielderSeedMnemonic"
+                        ? maskMnemonic(
+                            shielderConfig
+                              ? shielderConfig[
+                                  option as keyof typeof shielderConfig
+                                ] || ""
+                              : "",
+                          )
+                        : shielderConfig
+                          ? shielderConfig[
+                              option as keyof typeof shielderConfig
+                            ] || ""
+                          : ""
                     }
                     onChange={(e) => {
                       let cfg = { ...newShielderConfig! };

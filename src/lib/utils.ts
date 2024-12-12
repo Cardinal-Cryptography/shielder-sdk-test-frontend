@@ -47,3 +47,7 @@ export const formatEtherTrim = (wei: bigint) => {
   }
   return `${whole}.${decimal.slice(0, 4)}`;
 };
+
+export const formatHash = (hash: string) => {
+  return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
+};

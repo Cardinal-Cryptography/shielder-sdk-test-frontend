@@ -7,7 +7,28 @@ import {
   ShielderTransaction,
 } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery } from "@tanstack/react-query";
+import { mnemonicToAccount } from "viem/accounts";
+import { sha256 } from "viem";
 import { useChainId, useChains } from "wagmi";
+import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
+import { useToast } from "@/lib/context/useToast";
+
+const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
+  accountIndex: 603302,
+  //            COMMON
+};
+
+const deriveShielderPrivateKey = (mnemonic: string) => {
+  const baseAccountForShielder = mnemonicToAccount(
+    mnemonic,
+    SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH,
+  );
+  const { privateKey } = baseAccountForShielder.getHdKey();
+  if (!privateKey) {
+    throw new Error("Private key not available");
+  }
+  return sha256(privateKey);
+};
 
 export const useShielderClient = () => {
   const { shielderConfig, kek } = useConfig();
@@ -15,6 +36,8 @@ export const useShielderClient = () => {
   const { isWasmLoaded } = useWasm();
   const chains = useChains();
   const chainId = useChainId();
+  const { saveLatestProof } = useSaveLatestProof();
+  const { toast } = useToast();
 
   const { data: shielderClient, error } = useQuery({
     queryKey: ["shielderClient", shielderConfig, isWasmLoaded, kek],
@@ -30,8 +53,8 @@ export const useShielderClient = () => {
       if (!shielderConfig) {
         throw new Error("Config not available");
       }
-      if (!shielderConfig.shielderSeedKey) {
-        throw new Error("Shielder seed key not available");
+      if (!shielderConfig.shielderSeedMnemonic) {
+        throw new Error("Shielder seed mnemonic not available");
       }
       if (!shielderConfig.shielderContractAddress) {
         throw new Error("Shielder contract address not available");
@@ -43,7 +66,7 @@ export const useShielderClient = () => {
         throw new Error("Relayer URL not available");
       }
       const client = createShielderClient(
-        shielderConfig.shielderSeedKey as `0x${string}`,
+        deriveShielderPrivateKey(shielderConfig.shielderSeedMnemonic),
         chainId,
         publicRpcUrl,
         shielderConfig.shielderContractAddress as `0x${string}`,
@@ -53,6 +76,17 @@ export const useShielderClient = () => {
         {
           onNewTransaction: async (tx: ShielderTransaction) => {
             await insertTransaction.mutateAsync(tx);
+            toast({
+              title: "Transaction completed",
+              description: `Transaction ${tx.type} completed`,
+            });
+          },
+          onCalldataGenerated: async (calldata) => {
+            saveLatestProof.mutate(calldata.provingTimeMillis);
+            toast({
+              title: "Proof generated",
+              description: `Proof generated in ${calldata.provingTimeMillis}ms`,
+            });
           },
         },
       );

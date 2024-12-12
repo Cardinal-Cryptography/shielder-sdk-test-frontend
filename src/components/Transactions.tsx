@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTransactions } from "@/lib/transactions/useTransactions";
-import { formatEtherTrim } from "@/lib/utils";
+import { formatEtherTrim, formatHash } from "@/lib/utils";
 import { ArrowDownLeft, ArrowUpRight, User } from "lucide-react";
 import { useChainId, useChains } from "wagmi";
 
@@ -28,10 +28,6 @@ const TransactionLabel = ({ type }: { type: string }) => {
     default:
       return null;
   }
-};
-
-const formatHash = (hash: string) => {
-  return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
 };
 
 export const Transactions = () => {

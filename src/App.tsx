@@ -5,6 +5,7 @@ import { getDefaultConfig, ConnectKitProvider } from "connectkit";
 import { alephTestnet } from "@/lib/chains/alephTestnet";
 import { WagmiProvider, createConfig } from "wagmi";
 import { alephMainnet } from "@/lib/chains/alephMainnet";
+import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ function App() {
           <ConnectKitProvider>
             <WasmProvider>
               <DashboardInterface />
+              <Toaster />
             </WasmProvider>
           </ConnectKitProvider>
         </QueryClientProvider>

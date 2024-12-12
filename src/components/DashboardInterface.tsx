@@ -9,7 +9,11 @@ import { useShielderClient } from "@/lib/context/useShielderClient";
 import { usePublicAccount } from "@/lib/context/usePublicAccount";
 import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
-import { clearShielderClientStorage, formatEtherTrim } from "@/lib/utils";
+import {
+  clearShielderClientStorage,
+  formatEtherTrim,
+  formatHash,
+} from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
 import Faucet from "@/components/Faucet";
@@ -18,6 +22,7 @@ import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { Switch } from "@/components/ui/switch";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import { useConfig } from "@/lib/context/useConfig";
+import { CopyContent } from "@/components/ui/copy-content";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
@@ -157,7 +162,12 @@ const DashboardInterface = () => {
                 <p className="text-2xl font-semibold">
                   {formatEtherTrim(publicBalance)}
                 </p>
-                <p className="text-sm text-gray-500">{publicAddress}</p>
+                <div className="flex">
+                  <p className="text-sm text-gray-500">
+                    {formatHash(publicAddress)}
+                  </p>
+                  <CopyContent content={publicAddress} />
+                </div>
               </CardContent>
             </Card>
             {/* Private Balance */}
