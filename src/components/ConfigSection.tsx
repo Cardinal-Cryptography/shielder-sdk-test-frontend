@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRef, useState } from "react";
 import {
-  defaultTestnet as defaultTestnetShielderConfig,
   empty as emptyShielderConfig,
   shielderConfigSchema,
 } from "@/lib/storage/shielderConfig";
@@ -10,6 +9,11 @@ import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import { useConfig } from "@/lib/context/useConfig";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import { CopyContent } from "@/components/ui/copy-content";
+import {
+  empty as emptySeedMnemonic,
+  randomMnemonic,
+  seedMnemonicConfigSchema,
+} from "@/lib/storage/seedMnemonicConfig";
 
 const capitalizeAndAddSpace = (str: string) => {
   return str
@@ -26,11 +30,16 @@ const maskMnemonic = (mnemonic: string) => {
 };
 
 const ConfigSection = () => {
-  const { shielderConfig } = useConfig();
+  const { shielderConfig, seedMnemonicConfig } = useConfig();
 
   const shielderOptions = Object.keys(shielderConfigSchema.shape);
   const [newShielderConfig, setNewShielderConfig] = useState<
     typeof shielderConfig | undefined
+  >(undefined);
+
+  const seedMnemonicOptions = Object.keys(seedMnemonicConfigSchema.shape);
+  const [newSeedMnemonic, setSeedMnemonic] = useState<
+    typeof seedMnemonicConfig | undefined
   >(undefined);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,10 +51,13 @@ const ConfigSection = () => {
     saveConfig.mutate({
       shielderConfig:
         newShielderConfig || shielderConfig || emptyShielderConfig(),
+      seedMnemonicConfig:
+        newSeedMnemonic || seedMnemonicConfig || emptySeedMnemonic(),
     });
 
     // Reset the states
     setNewShielderConfig(undefined);
+    setSeedMnemonic(undefined);
 
     // Reset all input fields
     if (formRef.current) {
@@ -83,7 +95,9 @@ const ConfigSection = () => {
             className="w-full"
             onClick={() => {
               saveConfig.mutate({
-                shielderConfig: defaultTestnetShielderConfig(),
+                shielderConfig:
+                  newShielderConfig || shielderConfig || emptyShielderConfig(),
+                seedMnemonicConfig: randomMnemonic(),
               });
               if (formRef.current) {
                 const inputs = formRef.current.getElementsByTagName("input");
@@ -94,8 +108,57 @@ const ConfigSection = () => {
               alert("Configuration saved!");
             }}
           >
-            Preload Testnet Defaults
+            Generate random mnemonic
           </Button>
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold mb-2">Seed mnemonic</h2>
+            <div className="space-y-4">
+              {seedMnemonicOptions.map((option) => (
+                <div key={option}>
+                  <div className="flex">
+                    <label className="text-sm font-medium mb-1 block">
+                      {capitalizeAndAddSpace(option)}
+                    </label>
+
+                    <CopyContent
+                      content={
+                        seedMnemonicConfig
+                          ? seedMnemonicConfig[
+                              option as keyof typeof seedMnemonicConfig
+                            ] || ""
+                          : ""
+                      }
+                    />
+                  </div>
+                  <Input
+                    placeholder={maskMnemonic(
+                      seedMnemonicConfig
+                        ? seedMnemonicConfig[
+                            option as keyof typeof seedMnemonicConfig
+                          ] || ""
+                        : "",
+                    )}
+                    onChange={(e) => {
+                      let cfg = { ...newSeedMnemonic! };
+                      if (!newSeedMnemonic) {
+                        cfg = { ...seedMnemonicConfig! };
+                      }
+                      if (!cfg) {
+                        cfg = emptySeedMnemonic();
+                      }
+                      cfg[option as keyof typeof cfg] = e.target.value;
+                      setSeedMnemonic(cfg);
+                    }}
+                  />
+                </div>
+              ))}
+              <div className="space-y-2">
+                <Button className="w-full" onClick={() => handleSave()}>
+                  Load Mnemonic
+                </Button>
+              </div>
+            </div>
+          </div>
           <div className="mt-8">
             <h2 className="text-lg font-semibold mb-2">Shielder SDK</h2>
             <div className="space-y-4">
@@ -118,19 +181,11 @@ const ConfigSection = () => {
                   </div>
                   <Input
                     placeholder={
-                      option === "shielderSeedMnemonic"
-                        ? maskMnemonic(
-                            shielderConfig
-                              ? shielderConfig[
-                                  option as keyof typeof shielderConfig
-                                ] || ""
-                              : "",
-                          )
-                        : shielderConfig
-                          ? shielderConfig[
-                              option as keyof typeof shielderConfig
-                            ] || ""
-                          : ""
+                      shielderConfig
+                        ? shielderConfig[
+                            option as keyof typeof shielderConfig
+                          ] || ""
+                        : ""
                     }
                     onChange={(e) => {
                       let cfg = { ...newShielderConfig! };

@@ -1,3 +1,4 @@
+import { save, SeedMnemonicConfig } from "@/lib/storage/seedMnemonicConfig";
 import {
   save as saveShielderConfig,
   ShielderConfig,
@@ -12,10 +13,16 @@ export const useSaveConfig = () => {
     mutationKey: ["saveConfig"],
     mutationFn: async ({
       shielderConfig,
+      seedMnemonicConfig,
     }: {
       shielderConfig: ShielderConfig;
+      seedMnemonicConfig?: SeedMnemonicConfig;
     }) => {
       saveShielderConfig(shielderConfig);
+      if (seedMnemonicConfig) {
+        console.log("Saving seedMnemonicConfig", seedMnemonicConfig);
+        save(seedMnemonicConfig);
+      }
       clear();
       localStorage.removeItem("shielderClient");
     },

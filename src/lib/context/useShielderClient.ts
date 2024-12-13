@@ -32,7 +32,7 @@ const deriveShielderPrivateKey = (mnemonic: string) => {
 };
 
 export const useShielderClient = () => {
-  const { shielderConfig, kek } = useConfig();
+  const { shielderConfig, seedMnemonicConfig, kek } = useConfig();
   const insertTransaction = useInsertTransaction();
   const { isWasmLoaded } = useWasm();
   const chains = useChains();
@@ -41,7 +41,14 @@ export const useShielderClient = () => {
   const { toast } = useToast();
 
   const { data: shielderClient, error } = useQuery({
-    queryKey: ["shielderClient", shielderConfig, isWasmLoaded, chainId, kek],
+    queryKey: [
+      "shielderClient",
+      shielderConfig,
+      seedMnemonicConfig,
+      isWasmLoaded,
+      chainId,
+      kek,
+    ],
     queryFn: () => {
       if (!isWasmLoaded) {
         throw new Error("Wasm not loaded");
@@ -54,7 +61,10 @@ export const useShielderClient = () => {
       if (!shielderConfig) {
         throw new Error("Config not available");
       }
-      if (!shielderConfig.shielderSeedMnemonic) {
+      if (!seedMnemonicConfig) {
+        throw new Error("Seed mnemonic config not available");
+      }
+      if (!seedMnemonicConfig.shielderSeedMnemonic) {
         throw new Error("Shielder seed mnemonic not available");
       }
       if (!shielderConfig.shielderContractAddress) {
@@ -70,7 +80,7 @@ export const useShielderClient = () => {
         throw new Error("Chain ID not available");
       }
       const client = createShielderClient(
-        deriveShielderPrivateKey(shielderConfig.shielderSeedMnemonic),
+        deriveShielderPrivateKey(seedMnemonicConfig.shielderSeedMnemonic),
         chainId,
         publicRpcUrl,
         shielderConfig.shielderContractAddress as `0x${string}`,

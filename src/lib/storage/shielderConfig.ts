@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { english, generateMnemonic } from "viem/accounts";
 
 const storageKey = "shielderConfig";
 
@@ -7,7 +6,6 @@ export const shielderConfigSchema = z.object({
   shielderContractAddress: z.string().nullable(),
   relayerUrl: z.string().nullable(),
   relayerAddress: z.string().nullable(),
-  shielderSeedMnemonic: z.string().nullable(),
 });
 
 export type ShielderConfig = z.infer<typeof shielderConfigSchema>;
@@ -16,7 +14,6 @@ export const empty = (): ShielderConfig => ({
   shielderContractAddress: null,
   relayerUrl: null,
   relayerAddress: null,
-  shielderSeedMnemonic: null,
 });
 
 export const fromLocalStorage = (): ShielderConfig | null => {
@@ -40,11 +37,9 @@ export const clear = () => {
 };
 
 export const defaultTestnet = (): ShielderConfig => {
-  const randomMnemonic = generateMnemonic(english);
   return {
     shielderContractAddress: "0x0019849f3fBA1ECd3fB4A2e27759e9432b19F6F3",
     relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
     relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
-    shielderSeedMnemonic: randomMnemonic,
   };
 };

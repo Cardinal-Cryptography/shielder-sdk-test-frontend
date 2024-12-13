@@ -24,6 +24,7 @@ import { PublicBalance } from "@/components/PublicBalance";
 import { useChain } from "@/lib/context/useChain";
 import { useSwitchChain } from "@/lib/context/useSwitchChain";
 import { useAccount } from "wagmi";
+import { useChainId } from "@/lib/context/useChainId";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
@@ -36,6 +37,7 @@ const DashboardInterface = () => {
   const { chainId: accountChainId } = useAccount();
   const switchChain = useSwitchChain();
   const currentChain = useChain();
+  const chainId = useChainId();
 
   const header = (children: React.ReactNode) => {
     return (
@@ -68,6 +70,12 @@ const DashboardInterface = () => {
                   {accountChainId ? (
                     !accountChainIdSupported(accountChainId) ? (
                       <p className="text-red-500">Unsupported chain!</p>
+                    ) : accountChainId !== chainId ? (
+                      <p className="text-red-500">
+                        Switch to{" "}
+                        <span className="font-bold">{currentChain}</span> in
+                        wallet!
+                      </p>
                     ) : null
                   ) : null}
                 </div>

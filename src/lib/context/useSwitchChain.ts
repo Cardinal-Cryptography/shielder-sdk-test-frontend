@@ -1,10 +1,12 @@
+import { useSaveConfig } from "@/lib/context/useSaveConfig";
+import { defaultTestnet, ShielderConfig } from "@/lib/storage/shielderConfig";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount, useSwitchChain as useSwitchChainWagmi } from "wagmi";
+import { useAccount } from "wagmi";
 
 export const useSwitchChain = () => {
   const queryClient = useQueryClient();
   const { isConnected } = useAccount();
-  const { switchChain: switchChainWagmi } = useSwitchChainWagmi();
+  const saveConfig = useSaveConfig();
 
   const mutation = useMutation({
     mutationKey: ["useSwitchCurrentChain"],
@@ -16,13 +18,18 @@ export const useSwitchChain = () => {
         queryKey: ["currentChain"],
       });
       if (isConnected) {
-        console.log("here");
+        let newConfig: ShielderConfig | null = null;
         if (localStorage.getItem("currentChain") === "mainnet") {
-          switchChainWagmi({ chainId: 41455 });
+          //   switchChainWagmi({ chainId: 41455 });
+          newConfig = defaultTestnet();
         }
         if (localStorage.getItem("currentChain") === "testnet") {
-          switchChainWagmi({ chainId: 2039 });
+          //   switchChainWagmi({ chainId: 2039 });
+          newConfig = defaultTestnet();
         }
+        await saveConfig.mutateAsync({
+          shielderConfig: newConfig!,
+        });
       }
     },
   });
