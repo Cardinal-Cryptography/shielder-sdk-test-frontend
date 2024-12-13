@@ -1,5 +1,9 @@
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
-import { defaultTestnet, ShielderConfig } from "@/lib/storage/shielderConfig";
+import {
+  defaultMainnet,
+  defaultTestnet,
+  ShielderConfig,
+} from "@/lib/storage/shielderConfig";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 
@@ -21,7 +25,7 @@ export const useSwitchChain = () => {
         let newConfig: ShielderConfig | null = null;
         if (localStorage.getItem("currentChain") === "mainnet") {
           //   switchChainWagmi({ chainId: 41455 });
-          newConfig = defaultTestnet();
+          newConfig = defaultMainnet();
         }
         if (localStorage.getItem("currentChain") === "testnet") {
           //   switchChainWagmi({ chainId: 2039 });

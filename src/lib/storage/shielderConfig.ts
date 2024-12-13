@@ -43,3 +43,11 @@ export const defaultTestnet = (): ShielderConfig => {
     relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
   };
 };
+
+export const defaultMainnet = (): ShielderConfig => {
+  return {
+    shielderContractAddress: "0x48237d5B3659182b1B70Ccf8E4D077e812AaA5FF",
+    relayerUrl: "https://shielder-relayer.azero.dev",
+    relayerAddress: "0xccd76c1d10458011dac9c346834387d6c01c8152",
+  };
+};
