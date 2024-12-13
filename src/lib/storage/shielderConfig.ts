@@ -42,7 +42,7 @@ export const clear = () => {
 export const defaultTestnet = (): ShielderConfig => {
   const randomMnemonic = generateMnemonic(english);
   return {
-    shielderContractAddress: "0x0CCf21fd6a2574D7186d94970F8D6E63a545879a",
+    shielderContractAddress: "0x0019849f3fBA1ECd3fB4A2e27759e9432b19F6F3",
     relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
     relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
     shielderSeedMnemonic: randomMnemonic,

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@cardinal-cryptography/shielder-sdk':
-        specifier: ~0.1.0
-        version: 0.1.0(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
+        specifier: ~0.1.1
+        version: 0.1.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
       '@marsidev/react-turnstile':
         specifier: ^1.1.0
         version: 1.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -233,8 +233,8 @@ packages:
     resolution: {integrity: sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==}
     engines: {node: '>=6.9.0'}
 
-  '@cardinal-cryptography/shielder-sdk@0.1.0':
-    resolution: {integrity: sha512-BjJaFH9+4Ih+Pwj7SxKKTaqYioyow3/7fIqnjKfyow78eExSSIuwnn05TrxYF1r+haw1tWSiOJTvmGhCBq95yA==}
+  '@cardinal-cryptography/shielder-sdk@0.1.1':
+    resolution: {integrity: sha512-3lIBy7zBxhmXa8TyjHVGYLEvRkQR6nsM+sNBHsu1eEr9BZjNisbIa7db46RJJ33TEcxGhrDK2dqtZhNwk5ZD7A==}
 
   '@coinbase/wallet-sdk@3.9.3':
     resolution: {integrity: sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw==}
@@ -3665,7 +3665,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@cardinal-cryptography/shielder-sdk@0.1.0(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+  '@cardinal-cryptography/shielder-sdk@0.1.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       async-mutex: 0.5.0
       comlink: 4.4.2
