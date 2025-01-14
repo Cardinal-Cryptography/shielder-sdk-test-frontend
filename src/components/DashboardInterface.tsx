@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RefreshCcw, Terminal } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import ConfigSection from "@/components/ConfigSection";
 import ShieldModal from "@/components/ShieldModal";
 import useWasm from "@/lib/context/useWasm";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import DependenciesAlert from "@/components/DependenciesAlert";
 import { useShielderClient } from "@/lib/context/useShielderClient";
 import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
@@ -54,16 +54,7 @@ const DashboardInterface = () => {
             {/* Header */}
             {/* put them horizontally */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-              <Alert>
-                <Terminal className="mr-2 h-5 w-5" />
-                <AlertTitle>Shielder SDK dependency</AlertTitle>
-                <AlertDescription>
-                  @cardinal-cryptography/shielder-sdk@
-                  <span className="font-bold">
-                    {import.meta.env.VITE_SDK_VERSION}
-                  </span>
-                </AlertDescription>
-              </Alert>
+              <DependenciesAlert />
               <div className="flex justify-center space-x-8">
                 <div className="flex flex-col justify-center items-center">
                   <ConnectKitButton />

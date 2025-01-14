@@ -9,8 +9,14 @@ importers:
   .:
     dependencies:
       '@cardinal-cryptography/shielder-sdk':
-        specifier: ~0.1.1
-        version: 0.1.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
+        specifier: 0.2.0-alpha.1
+        version: 0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
+      '@cardinal-cryptography/shielder-sdk-crypto':
+        specifier: 0.2.0-alpha.1
+        version: 0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
+      '@cardinal-cryptography/shielder-sdk-crypto-wasm':
+        specifier: 0.2.0-alpha.3
+        version: 0.2.0-alpha.3(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
       '@marsidev/react-turnstile':
         specifier: ^1.1.0
         version: 1.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -233,8 +239,14 @@ packages:
     resolution: {integrity: sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==}
     engines: {node: '>=6.9.0'}
 
-  '@cardinal-cryptography/shielder-sdk@0.1.1':
-    resolution: {integrity: sha512-3lIBy7zBxhmXa8TyjHVGYLEvRkQR6nsM+sNBHsu1eEr9BZjNisbIa7db46RJJ33TEcxGhrDK2dqtZhNwk5ZD7A==}
+  '@cardinal-cryptography/shielder-sdk-crypto-wasm@0.2.0-alpha.3':
+    resolution: {integrity: sha512-yJU0XezTJGkR2ncm+rUn/PrSvIPtCuIi9elB56haQns4u9IN1ZYDvGVgNe4olrqaYFfaV98Xm+d8nY8QEF9PnQ==}
+
+  '@cardinal-cryptography/shielder-sdk-crypto@0.2.0-alpha.1':
+    resolution: {integrity: sha512-RZ0MHk8h9RFuPPSrDHYwzha70lIWfNW1naGbS/0NU96+HaLonYYlOqj+VlgKkVtCXDQEVxC/IWDRC75sQ4PHcg==}
+
+  '@cardinal-cryptography/shielder-sdk@0.2.0-alpha.1':
+    resolution: {integrity: sha512-Adrc08i7048V6gm3bdk8+G0GIgL92gBmU+FfcMxI2bAi+ScZBgY0Jv8xLX2e4tJBU4GzOZZCmr6JXAY6fIqLjA==}
 
   '@coinbase/wallet-sdk@3.9.3':
     resolution: {integrity: sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw==}
@@ -782,12 +794,24 @@ packages:
     resolution: {integrity: sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==}
     engines: {node: ^14.21.3 || >=16}
 
+  '@noble/curves@1.7.0':
+    resolution: {integrity: sha512-UTMhXK9SeDhFJVrHeUJ5uZlI6ajXg10O6Ddocf9S6GjbSBVZsJo88HzKwXznNfGpMTRDyJkqMjNDPYgf0qFWnw==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
 
   '@noble/hashes@1.5.0':
     resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.6.0':
+    resolution: {integrity: sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.6.1':
+    resolution: {integrity: sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==}
     engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -1330,17 +1354,26 @@ packages:
   '@scure/base@1.1.9':
     resolution: {integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==}
 
+  '@scure/base@1.2.1':
+    resolution: {integrity: sha512-DGmGtC8Tt63J5GfHgfl5CuAXh96VF/LD8K9Hr/Gv0J2lAoRGlPOMpqMpMbCTOoOJMZCk2Xt+DskdDyn6dEFdzQ==}
+
   '@scure/bip32@1.4.0':
     resolution: {integrity: sha512-sVUpc0Vq3tXCkDGYVWGIZTRfnvu8LoTDaev7vbwh0omSvVORONr960MQWdKqJDCReIEmTj3PAr73O3aoxz7OPg==}
 
   '@scure/bip32@1.5.0':
     resolution: {integrity: sha512-8EnFYkqEQdnkuGBVpCzKxyIwDCBLDVj3oiX0EKUFre/tOjL/Hqba1D6n/8RcmaQy4f95qQFrO2A8Sr6ybh4NRw==}
 
+  '@scure/bip32@1.6.0':
+    resolution: {integrity: sha512-82q1QfklrUUdXJzjuRU7iG7D7XiFx5PHYVS0+oeNKhyDLT7WPqs6pBcM2W5ZdwOwKCwoE1Vy1se+DHjcXwCYnA==}
+
   '@scure/bip39@1.3.0':
     resolution: {integrity: sha512-disdg7gHuTDZtY+ZdkmLpPCk7fxZSu3gBiEGuoC1XYxv9cGx3Z6cpTggCgW6odSOOIXCiDjuGejW+aJKCY/pIQ==}
 
   '@scure/bip39@1.4.0':
     resolution: {integrity: sha512-BEEm6p8IueV/ZTfQLp/0vhw4NPnT9oWf5+28nvmeUICjP99f4vr2d+qc7AVGDDtwRep6ifR43Yed9ERVmiITzw==}
+
+  '@scure/bip39@1.5.0':
+    resolution: {integrity: sha512-Dop+ASYhnrwm9+HA/HwXg7j2ZqM6yk2fyLWb5znexjctFY3+E+eU8cIWI0Pql0Qx4hPZCijlGq4OL71g+Uz30A==}
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
@@ -1631,6 +1664,17 @@ packages:
 
   abitype@1.0.6:
     resolution: {integrity: sha512-MMSqYh4+C/aVqI2RQaWqbvI4Kxo5cQV40WQ4QFtDnNzCkqChm8MuENhElmynZlO0qUy/ObkEUaXtKqYnx1Kp3A==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+      zod: ^3 >=3.22.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
+
+  abitype@1.0.7:
+    resolution: {integrity: sha512-ZfYYSktDQUwc2eduYu8C4wOs+RDPmnRYMh7zNfzeMtGGgb0U+6tLGjixUic6mXf5xKKCcgT5Qp6cv39tOARVFw==}
     peerDependencies:
       typescript: '>=5.0.4'
       zod: ^3 >=3.22.0
@@ -2675,6 +2719,14 @@ packages:
       typescript:
         optional: true
 
+  ox@0.6.0:
+    resolution: {integrity: sha512-blUzTLidvUlshv0O02CnLFqBLidNzPoAZdIth894avUAotTuWziznv6IENv5idRuOSSP3dH8WzcYw84zVdu0Aw==}
+    peerDependencies:
+      typescript: '>=5.4.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
     engines: {node: '>=6'}
@@ -3354,6 +3406,14 @@ packages:
       typescript:
         optional: true
 
+  viem@2.22.8:
+    resolution: {integrity: sha512-iB3PW/a/qzpYbpjo3R662u6a/zo6piZHez/N/bOC25C79FYXBCs8mQDqwiHk3FYErUhS4KVZLabKV9zGMd+EgQ==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   vite@5.4.11:
     resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -3665,8 +3725,28 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@cardinal-cryptography/shielder-sdk@0.1.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+  '@cardinal-cryptography/shielder-sdk-crypto-wasm@0.2.0-alpha.3(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)':
     dependencies:
+      '@cardinal-cryptography/shielder-sdk-crypto': 0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
+      comlink: 4.4.2
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@cardinal-cryptography/shielder-sdk-crypto@0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)':
+    dependencies:
+      viem: 2.22.8(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@cardinal-cryptography/shielder-sdk@0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@cardinal-cryptography/shielder-sdk-crypto': 0.2.0-alpha.1(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
       async-mutex: 0.5.0
       comlink: 4.4.2
       ts-custom-error: 3.3.1
@@ -4218,9 +4298,17 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.5.0
 
+  '@noble/curves@1.7.0':
+    dependencies:
+      '@noble/hashes': 1.6.0
+
   '@noble/hashes@1.4.0': {}
 
   '@noble/hashes@1.5.0': {}
+
+  '@noble/hashes@1.6.0': {}
+
+  '@noble/hashes@1.6.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -4682,6 +4770,8 @@ snapshots:
 
   '@scure/base@1.1.9': {}
 
+  '@scure/base@1.2.1': {}
+
   '@scure/bip32@1.4.0':
     dependencies:
       '@noble/curves': 1.4.2
@@ -4694,6 +4784,12 @@ snapshots:
       '@noble/hashes': 1.5.0
       '@scure/base': 1.1.9
 
+  '@scure/bip32@1.6.0':
+    dependencies:
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+      '@scure/base': 1.2.1
+
   '@scure/bip39@1.3.0':
     dependencies:
       '@noble/hashes': 1.4.0
@@ -4703,6 +4799,11 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.5.0
       '@scure/base': 1.1.9
+
+  '@scure/bip39@1.5.0':
+    dependencies:
+      '@noble/hashes': 1.6.1
+      '@scure/base': 1.2.1
 
   '@socket.io/component-emitter@3.1.2': {}
 
@@ -5306,6 +5407,11 @@ snapshots:
       tslib: 1.14.1
 
   abitype@1.0.6(typescript@5.6.3)(zod@3.24.0):
+    optionalDependencies:
+      typescript: 5.6.3
+      zod: 3.24.0
+
+  abitype@1.0.7(typescript@5.6.3)(zod@3.24.0):
     optionalDependencies:
       typescript: 5.6.3
       zod: 3.24.0
@@ -6411,6 +6517,20 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
+  ox@0.6.0(typescript@5.6.3)(zod@3.24.0):
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.0
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+      '@scure/bip32': 1.6.0
+      '@scure/bip39': 1.5.0
+      abitype: 1.0.7(typescript@5.6.3)(zod@3.24.0)
+      eventemitter3: 5.0.1
+    optionalDependencies:
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - zod
+
   p-limit@2.3.0:
     dependencies:
       p-try: 2.2.0
@@ -7088,6 +7208,24 @@ snapshots:
       - utf-8-validate
       - zod
 
+  viem@2.22.8(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0):
+    dependencies:
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+      '@scure/bip32': 1.6.0
+      '@scure/bip39': 1.5.0
+      abitype: 1.0.7(typescript@5.6.3)(zod@3.24.0)
+      isows: 1.0.6(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      ox: 0.6.0(typescript@5.6.3)(zod@3.24.0)
+      webauthn-p256: 0.0.10
+      ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+    optionalDependencies:
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
   vite@5.4.11(@types/node@22.9.1):
     dependencies:
       esbuild: 0.21.5
@@ -7132,8 +7270,8 @@ snapshots:
 
   webauthn-p256@0.0.10:
     dependencies:
-      '@noble/curves': 1.6.0
-      '@noble/hashes': 1.5.0
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
 
   webextension-polyfill@0.10.0: {}
 

@@ -1,21 +1,30 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { wasmClientWorkerInit } from "@cardinal-cryptography/shielder-sdk";
+import {
+  CryptoClient,
+  Scalar,
+} from "@cardinal-cryptography/shielder-sdk-crypto";
 
 import { WasmContext } from "@/lib/context/useWasm";
+import { wasmCryptoClientRead } from "@/lib/utils";
 
 type Props = { children: ReactNode };
 
-const wasmClientWorkerReady = wasmClientWorkerInit(
-  navigator.hardwareConcurrency,
-);
+export let wasmCryptoClient: CryptoClient | null = null;
 
 const WasmProvider = ({ children }: Props) => {
   const [isWasmLoaded, setIsWasmLoaded] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    wasmClientWorkerReady
-      .then(() => void setIsWasmLoaded(true))
+    wasmCryptoClientRead
+      .then((cryptoClient) => {
+        console.log("Wasm loaded");
+        cryptoClient.hasher
+          .poseidonHash([Scalar.fromBigint(1n)])
+          .then(console.log);
+        wasmCryptoClient = cryptoClient;
+        void setIsWasmLoaded(true);
+      })
       .catch((err: unknown) => void setError(err as Error));
   }, []);
 

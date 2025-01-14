@@ -10,7 +10,9 @@
     "preview": "tsx create-dotenv.ts && vite preview"
   },
   "dependencies": {
-    "@cardinal-cryptography/shielder-sdk": "~0.1.1",
+    "@cardinal-cryptography/shielder-sdk": "0.2.0-alpha.1",
+    "@cardinal-cryptography/shielder-sdk-crypto": "0.2.0-alpha.1",
+    "@cardinal-cryptography/shielder-sdk-crypto-wasm": "0.2.0-alpha.3",
     "@marsidev/react-turnstile": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",

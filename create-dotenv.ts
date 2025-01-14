@@ -5,14 +5,28 @@ const file = fs.readFileSync("./pnpm-lock.yaml", "utf8");
 
 const parsed = YAML.parse(file);
 
-const version = parsed["importers"]["."]["dependencies"][
-  "@cardinal-cryptography/shielder-sdk"
-]["version"]
-  .split("(")[0]
-  .trim();
+// clear .env file
 
-fs.writeFileSync(
-  ".env",
-  `VITE_SDK_VERSION=${version}\nVITE_CF_KEY=${process.env.VITE_CF_KEY}\n`,
-  { flag: "w" },
-);
+fs.writeFileSync(".env", "", { flag: "w" });
+
+const dependencies = [
+  {
+    name: "@cardinal-cryptography/shielder-sdk",
+    envKey: "VITE_SDK_VERSION",
+  },
+  {
+    name: "@cardinal-cryptography/shielder-sdk-crypto",
+    envKey: "VITE_SDK_CRYPTO_VERSION",
+  },
+  {
+    name: "@cardinal-cryptography/shielder-sdk-crypto-wasm",
+    envKey: "VITE_SDK_CRYPTO_WASM_VERSION",
+  },
+];
+
+for (const dep of dependencies) {
+  const version = parsed["importers"]["."]["dependencies"][dep.name]["version"]
+    .split("(")[0]
+    .trim();
+  fs.writeFileSync(".env", `${dep.envKey}=${version}\n`, { flag: "a" });
+}

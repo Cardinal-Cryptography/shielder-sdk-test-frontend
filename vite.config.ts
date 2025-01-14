@@ -27,6 +27,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ["@cardinal-cryptography/shielder-sdk"],
+    exclude: ["@cardinal-cryptography/shielder-sdk-crypto-wasm"],
   },
 });

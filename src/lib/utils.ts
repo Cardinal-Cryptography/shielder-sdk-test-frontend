@@ -1,8 +1,13 @@
 import { clear } from "@/lib/storage/transactions";
+import { initWasmWorker } from "@cardinal-cryptography/shielder-sdk-crypto-wasm";
 import { QueryClient } from "@tanstack/react-query";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatEther } from "viem";
+
+export const wasmCryptoClientRead = initWasmWorker(
+  navigator.hardwareConcurrency,
+);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -1,14 +1,22 @@
 name: "Build and deploy browser extension"
 
 on:
-  workflow_call:
   workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: "Deployment type"
+        required: true
+        default: "preview"
+        options:
+          - "preview"
+          - "prod"
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   VITE_CF_KEY: ${{ secrets.VITE_CF_KEY }}
-  NODE_VERSION: 18
+  PROD_OR_PREVIEW: ${{ inputs.deployment_type == 'prod' && '--prod' || '' }}
+  NODE_VERSION: 23
 
 jobs:
   build-deploy-browser-extension:
@@ -51,9 +59,9 @@ jobs:
         run: vercel pull --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build for vercel
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build ${{ env.PROD_OR_PREVIEW }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to vercel
         run: |
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          vercel deploy --prebuilt ${{ env.PROD_OR_PREVIEW }} --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
           echo "frontend preview deployment: <br />$(cat deployment-url.txt)" > deployment-url.txt

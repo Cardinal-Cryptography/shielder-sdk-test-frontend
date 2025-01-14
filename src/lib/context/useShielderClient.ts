@@ -13,6 +13,7 @@ import { useChains } from "wagmi";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 import { useToast } from "@/lib/context/useToast";
 import { useChainId } from "@/lib/context/useChainId";
+import { wasmCryptoClient } from "@/lib/providers/WasmProvider";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -70,9 +71,6 @@ export const useShielderClient = () => {
       if (!shielderConfig.shielderContractAddress) {
         throw new Error("Shielder contract address not available");
       }
-      if (!shielderConfig.relayerAddress) {
-        throw new Error("Relayer address not available");
-      }
       if (!shielderConfig.relayerUrl) {
         throw new Error("Relayer URL not available");
       }
@@ -84,9 +82,9 @@ export const useShielderClient = () => {
         chainId,
         publicRpcUrl,
         shielderConfig.shielderContractAddress as `0x${string}`,
-        shielderConfig.relayerAddress as `0x${string}`,
         shielderConfig.relayerUrl,
         shielderClientStorage,
+        wasmCryptoClient!,
         {
           onNewTransaction: async (tx: ShielderTransaction) => {
             await insertTransaction.mutateAsync(tx);
