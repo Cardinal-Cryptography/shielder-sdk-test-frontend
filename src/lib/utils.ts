@@ -53,5 +53,10 @@ export const formatHash = (hash: string) => {
 };
 
 export const accountChainIdSupported = (chainId: number | undefined) => {
-  return chainId === undefined || chainId === 2039 || chainId === 41455;
+  return (
+    chainId === undefined ||
+    chainId === 2039 ||
+    chainId === 41455 ||
+    chainId === 421614
+  );
 };

@@ -5,5 +5,8 @@ export const useChainId = () => {
   if (chain === "testnet") {
     return 2039;
   }
+  if (chain === "arbitrum_sepolia") {
+    return 421614;
+  }
   return 41455;
 };

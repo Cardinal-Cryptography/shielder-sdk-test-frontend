@@ -51,3 +51,11 @@ export const defaultMainnet = (): ShielderConfig => {
     relayerAddress: "0xccd76c1d10458011dac9c346834387d6c01c8152",
   };
 };
+
+export const defaultArbitrumSepolia = (): ShielderConfig => {
+  return {
+    shielderContractAddress: "0x9011CDc461a2e422a35Ab7aeCD5734028915d200",
+    relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
+    relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
+  };
+};

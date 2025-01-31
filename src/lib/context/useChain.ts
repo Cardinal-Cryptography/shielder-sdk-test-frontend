@@ -8,9 +8,9 @@ export const useChain = () => {
       if (!chain) {
         return "testnet";
       }
-      return chain as "testnet" | "mainnet";
+      return chain as "testnet" | "mainnet" | "arbitrum_sepolia";
     },
-    initialData: "testnet" as "testnet" | "mainnet",
+    initialData: "testnet" as "testnet" | "mainnet" | "arbitrum_sepolia",
   });
   return chain;
 };

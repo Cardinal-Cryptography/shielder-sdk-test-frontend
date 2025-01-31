@@ -17,7 +17,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
 import Faucet from "@/components/Faucet";
 import { ConnectKitButton } from "connectkit";
-import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import { useConfig } from "@/lib/context/useConfig";
 import { PublicBalance } from "@/components/PublicBalance";
@@ -80,25 +86,30 @@ const DashboardInterface = () => {
                   ) : null}
                 </div>
                 <div className="flex items-center space-x-2">
-                  <p> Testnet </p>
-                  <Switch
-                    className="data-[state=unchecked]:bg-green-500 data-[state=checked]:bg-red-500"
-                    checked={currentChain !== "testnet"}
-                    onCheckedChange={async (checked) => {
-                      if (checked) {
-                        switchChain.mutate("mainnet");
-                      } else {
-                        switchChain.mutate("testnet");
-                      }
-                      console.log(shielderConfig);
+                  <Select
+                    value={currentChain}
+                    onValueChange={(
+                      value: "mainnet" | "testnet" | "arbitrum_sepolia",
+                    ) => {
+                      switchChain.mutate(value);
                       if (shielderConfig) {
                         saveConfig.mutate({
                           shielderConfig,
                         });
                       }
                     }}
-                  />
-                  <p> Mainnet </p>
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select network" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="testnet">Testnet</SelectItem>
+                      <SelectItem value="mainnet">Mainnet</SelectItem>
+                      <SelectItem value="arbitrum_sepolia">
+                        Arbitrum Sepolia
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>

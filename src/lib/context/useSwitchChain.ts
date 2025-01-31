@@ -1,5 +1,6 @@
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import {
+  defaultArbitrumSepolia,
   defaultMainnet,
   defaultTestnet,
   ShielderConfig,
@@ -14,7 +15,9 @@ export const useSwitchChain = () => {
 
   const mutation = useMutation({
     mutationKey: ["useSwitchCurrentChain"],
-    mutationFn: async (currentChain: "mainnet" | "testnet") => {
+    mutationFn: async (
+      currentChain: "mainnet" | "testnet" | "arbitrum_sepolia",
+    ) => {
       localStorage.setItem("currentChain", currentChain);
     },
     onSuccess: async () => {
@@ -30,6 +33,9 @@ export const useSwitchChain = () => {
         if (localStorage.getItem("currentChain") === "testnet") {
           //   switchChainWagmi({ chainId: 2039 });
           newConfig = defaultTestnet();
+        }
+        if (localStorage.getItem("currentChain") === "arbitrum_sepolia") {
+          newConfig = defaultArbitrumSepolia();
         }
         await saveConfig.mutateAsync({
           shielderConfig: newConfig!,
