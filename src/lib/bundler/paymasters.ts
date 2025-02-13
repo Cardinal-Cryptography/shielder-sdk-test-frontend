@@ -15,7 +15,6 @@ export enum PaymasterKind {
 export interface Paymaster {
   kind: PaymasterKind;
   address: `0x${string}`;
-  smartAccountSingletonPK?: `0x${string}`;
   bundlerUrl: string;
   token?: Token;
 }
