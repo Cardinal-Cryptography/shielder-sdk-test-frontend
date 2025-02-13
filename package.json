@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx create-dotenv.ts && vite",
+    "dev": "VITE_PIMLICO_API_KEY=${VITE_PIMLICO_API_KEY} tsx create-dotenv.ts && vite",
     "build": "tsx create-dotenv.ts && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "tsx create-dotenv.ts && vite preview"
@@ -27,7 +27,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.4",
-    "viem": "^2.21.48",
+    "permissionless": "^0.2.26",
+    "viem": "^2.23.2",
     "wagmi": "^2.14.0",
     "zod": "^3.24.0"
   },
