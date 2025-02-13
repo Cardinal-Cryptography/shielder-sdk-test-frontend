@@ -2,17 +2,18 @@ import { useConfig } from "@/lib/context/useConfig";
 import useWasm from "@/lib/context/useWasm";
 import { useInsertTransaction } from "@/lib/transactions/newTransaction";
 import { shielderClientStorage } from "@/lib/utils";
-import {
-  createShielderClient,
-  ShielderTransaction,
-} from "@cardinal-cryptography/shielder-sdk";
+import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
-import { sha256 } from "viem";
+import { createPublicClient, defineChain, http, sha256 } from "viem";
 import { useChains } from "wagmi";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 import { useToast } from "@/lib/context/useToast";
 import { useChainId } from "@/lib/context/useChainId";
+import { ShielderClient } from "@cardinal-cryptography/shielder-sdk/__internal__";
+import { Contract } from "@cardinal-cryptography/shielder-sdk/__internal__";
+import { BundlerRelayer } from "../bundler/BundlerRelayer";
+import { paymasters } from "../bundler/paymasters";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -42,7 +43,7 @@ export const useShielderClient = () => {
 
   const { data: shielderClient, error } = useQuery({
     queryKey: [
-      "shielderClient",
+      "shielderClientWithBundler",
       shielderConfig,
       seedMnemonicConfig,
       isWasmLoaded,
@@ -70,23 +71,50 @@ export const useShielderClient = () => {
       if (!shielderConfig.shielderContractAddress) {
         throw new Error("Shielder contract address not available");
       }
-      if (!shielderConfig.relayerAddress) {
-        throw new Error("Relayer address not available");
+      if (!shielderConfig.paymasterAddress) {
+        throw new Error("Paymaster address not available");
       }
-      if (!shielderConfig.relayerUrl) {
-        throw new Error("Relayer URL not available");
+      if (!shielderConfig.bundlerUrl) {
+        throw new Error("Bundler URL not available");
       }
       if (!chainId) {
         throw new Error("Chain ID not available");
       }
-      const client = createShielderClient(
-        deriveShielderPrivateKey(seedMnemonicConfig.shielderSeedMnemonic),
-        chainId,
-        publicRpcUrl,
+
+      const publicClient = createPublicClient({
+        chain: defineChain({
+          name: "chain",
+          id: chainId,
+          rpcUrls: {
+            default: {
+              http: [publicRpcUrl],
+            },
+          },
+          nativeCurrency: {
+            name: "AZERO",
+            symbol: "AZERO",
+            decimals: 18,
+          },
+        }),
+        transport: http(),
+      });
+      const contract = new Contract(
+        publicClient,
         shielderConfig.shielderContractAddress as `0x${string}`,
-        shielderConfig.relayerAddress as `0x${string}`,
-        shielderConfig.relayerUrl,
+      );
+
+      const bundlerRelayer = new BundlerRelayer(
+        shielderConfig.shielderContractAddress! as `0x${string}`,
+        publicClient,
+        paymasters[chainId],
+      );
+
+      const client = new ShielderClient(
+        deriveShielderPrivateKey(seedMnemonicConfig.shielderSeedMnemonic),
+        contract,
+        bundlerRelayer,
         shielderClientStorage,
+        publicClient,
         {
           onNewTransaction: async (tx: ShielderTransaction) => {
             await insertTransaction.mutateAsync(tx);

@@ -9,12 +9,14 @@ export enum PaymasterKind {
   PIMLICO_ERC20,
   YOLO_ERC20,
   FREE_GAS,
+  NATIVE
 }
 
 export interface Paymaster {
   kind: PaymasterKind;
   address: `0x${string}`;
-  bundlerUrl?: string;
+  smartAccountSingletonPK?: `0x${string}`;
+  bundlerUrl: string;
   token?: Token;
 }
 
@@ -25,9 +27,9 @@ export interface Token {
 }
 
 export const paymasters: {
-  [key: number]: Paymaster[];
+  [key: number]: Paymaster;
 } = {
-  [arbitrum.id]: [
+  [arbitrum.id]: 
     {
       kind: PaymasterKind.PIMLICO_ERC20,
       address: "0x0000000000000039cd5e8aE05257CE51C473ddd1",
@@ -38,8 +40,7 @@ export const paymasters: {
         address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       },
     },
-  ],
-  [base.id]: [
+  [base.id]: 
     {
       kind: PaymasterKind.PIMLICO_ERC20,
       address: "0x0000000000000039cd5e8aE05257CE51C473ddd1",
@@ -50,8 +51,7 @@ export const paymasters: {
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       },
     },
-  ],
-  [optimism.id]: [
+  [optimism.id]: 
     {
       kind: PaymasterKind.PIMLICO_ERC20,
       address: "0x0000000000000039cd5e8aE05257CE51C473ddd1",
@@ -62,8 +62,7 @@ export const paymasters: {
         address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
       },
     },
-  ],
-  [alephZero.id]: [
+  [alephZero.id]: 
     {
       kind: PaymasterKind.YOLO_ERC20,
       bundlerUrl: `https://api.pimlico.io/v2/alephzero/rpc?apikey=${pimlicoApiKey}`,
@@ -74,19 +73,12 @@ export const paymasters: {
         address: "0x18d25B4e18165c97e1285212e5d1f80eDD6d3Aa7",
       },
     },
-  ],
-  [alephZeroTestnet.id]: [
+  [alephZeroTestnet.id]: 
     {
-      kind: PaymasterKind.FREE_GAS,
-      address: "0x3d04078Ec6CB1Dd8756F414Aa4770780820Ecf32",
+      kind: PaymasterKind.NATIVE,
+      address: "0xb3c551d16a4461435312Bc6faf50bb65A732fE7B",
       bundlerUrl: `https://api.pimlico.io/v2/alephzero-testnet/rpc?apikey=${pimlicoApiKey}`,
-      token: {
-        name: "Alepino",
-        decimals: 18n,
-        address: "0xe5e04aDE8E4B2ef04a755895C01C93471cc6B1B8",
-      },
     },
-  ],
 };
 
 export const createCustomPaymasterWithNoData = (pimlicoClient: PimlicoClient, paymaster: Paymaster) => {

@@ -25,7 +25,6 @@ import { useChain } from "@/lib/context/useChain";
 import { useSwitchChain } from "@/lib/context/useSwitchChain";
 import { useAccount } from "wagmi";
 import { useChainId } from "@/lib/context/useChainId";
-import SendBundlerModal from "./SendBundlerModal";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
@@ -159,7 +158,6 @@ const DashboardInterface = () => {
             <div className="space-y-2">
               <ShieldModal />
               <SendModal />
-              <SendBundlerModal />
               <Button
                 className="w-full h-12"
                 size="lg"

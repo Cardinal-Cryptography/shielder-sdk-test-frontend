@@ -1,19 +1,21 @@
 import { z } from "zod";
+import { paymasters } from "../bundler/paymasters";
+import { alephZero, alephZeroTestnet } from "viem/chains";
 
 const storageKey = "shielderConfig";
 
 export const shielderConfigSchema = z.object({
   shielderContractAddress: z.string().nullable(),
-  relayerUrl: z.string().nullable(),
-  relayerAddress: z.string().nullable(),
+  bundlerUrl: z.string().nullable(),
+  paymasterAddress: z.string().nullable(),
 });
 
 export type ShielderConfig = z.infer<typeof shielderConfigSchema>;
 
 export const empty = (): ShielderConfig => ({
   shielderContractAddress: null,
-  relayerUrl: null,
-  relayerAddress: null,
+  bundlerUrl: null,
+  paymasterAddress: null,
 });
 
 export const fromLocalStorage = (): ShielderConfig | null => {
@@ -39,15 +41,15 @@ export const clear = () => {
 export const defaultTestnet = (): ShielderConfig => {
   return {
     shielderContractAddress: "0x0019849f3fBA1ECd3fB4A2e27759e9432b19F6F3",
-    relayerUrl: "https://shielder-relayer-stage.test.azero.dev",
-    relayerAddress: "0xf4dD733dD78DA8E19278254d19A12d9E537A70A8",
+    bundlerUrl: paymasters[alephZeroTestnet.id].bundlerUrl,
+    paymasterAddress: paymasters[alephZeroTestnet.id].address,
   };
 };
 
 export const defaultMainnet = (): ShielderConfig => {
   return {
     shielderContractAddress: "0x48237d5B3659182b1B70Ccf8E4D077e812AaA5FF",
-    relayerUrl: "https://shielder-relayer.azero.dev",
-    relayerAddress: "0xccd76c1d10458011dac9c346834387d6c01c8152",
+    bundlerUrl: paymasters[alephZero.id].bundlerUrl,
+    paymasterAddress: paymasters[alephZero.id].address,
   };
 };
