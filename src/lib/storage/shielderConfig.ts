@@ -41,7 +41,7 @@ export const clear = () => {
 export const defaultTestnet = (): ShielderConfig => {
   return {
     shielderContractAddress: "0x0019849f3fBA1ECd3fB4A2e27759e9432b19F6F3",
-    bundlerUrl: paymasters[alephZeroTestnet.id].bundlerUrl,
+    bundlerUrl:  import.meta.env.VITE_TESTNET_BUNDLER_URL as string,
     paymasterAddress: paymasters[alephZeroTestnet.id].address,
   };
 };
@@ -49,7 +49,7 @@ export const defaultTestnet = (): ShielderConfig => {
 export const defaultMainnet = (): ShielderConfig => {
   return {
     shielderContractAddress: "0x48237d5B3659182b1B70Ccf8E4D077e812AaA5FF",
-    bundlerUrl: paymasters[alephZero.id].bundlerUrl,
+    bundlerUrl: null,
     paymasterAddress: paymasters[alephZero.id].address,
   };
 };

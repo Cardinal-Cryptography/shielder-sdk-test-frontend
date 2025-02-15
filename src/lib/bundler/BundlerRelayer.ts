@@ -9,19 +9,22 @@ import { toSharedAccountClient } from "./toSharedAccount";
 const FLAT_TOTAL_FEE = 15n * 10n ** 16n;
 
 export class BundlerRelayer implements IRelayer {
+  publicClient: PublicClient;
   address: Address; // paymaster address
   shielderAddress: Address;
-  publicClient: PublicClient;
+  bundlerUrl: string;
   paymaster: Paymaster;
   constructor(
-    shielderAddress: Address,
     publicClient: PublicClient,
+    shielderAddress: Address,
+    bundlerUrl: string,
     paymaster: Paymaster,
   ) {
+    this.publicClient = publicClient;
     this.address = paymaster.address;
     this.shielderAddress = shielderAddress;
-    this.publicClient = publicClient;
     this.paymaster = paymaster;
+    this.bundlerUrl = bundlerUrl;
   }
 
   quoteFees = async () => {
@@ -55,7 +58,7 @@ export class BundlerRelayer implements IRelayer {
       FLAT_TOTAL_FEE,
     ] as WithdrawNativeArgs;
     const nonceKey = getNonceKeyForWithdrawNative(this.shielderAddress, args);
-    const smartAccountClient = await toSharedAccountClient(this.publicClient, this.paymaster, nonceKey);
+    const smartAccountClient = await toSharedAccountClient(this.publicClient, this.paymaster, this.bundlerUrl, nonceKey);
     console.log("Sending user op");
     const tx_hash = await sendWIthdrawNativeTransaction(
       smartAccountClient,

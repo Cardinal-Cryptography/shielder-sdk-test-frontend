@@ -5,7 +5,7 @@ import { shielderClientStorage } from "@/lib/utils";
 import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
-import { createPublicClient, defineChain, http, sha256 } from "viem";
+import { Address, createPublicClient, defineChain, http, sha256 } from "viem";
 import { useChains } from "wagmi";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 import { useToast } from "@/lib/context/useToast";
@@ -100,12 +100,13 @@ export const useShielderClient = () => {
       });
       const contract = new Contract(
         publicClient,
-        shielderConfig.shielderContractAddress as `0x${string}`,
+        shielderConfig.shielderContractAddress as Address,
       );
 
       const bundlerRelayer = new BundlerRelayer(
-        shielderConfig.shielderContractAddress! as `0x${string}`,
         publicClient,
+        shielderConfig.shielderContractAddress! as Address,
+        shielderConfig.bundlerUrl,
         paymasters[chainId],
       );
 

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "VITE_PIMLICO_API_KEY=${VITE_PIMLICO_API_KEY} tsx create-dotenv.ts && vite",
+    "dev": "VITE_TESTNET_BUNDLER_URL=${VITE_TESTNET_BUNDLER_URL} tsx create-dotenv.ts && vite",
     "build": "tsx create-dotenv.ts && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "tsx create-dotenv.ts && vite preview"
