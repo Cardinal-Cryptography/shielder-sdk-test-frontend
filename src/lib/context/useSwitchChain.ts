@@ -1,9 +1,6 @@
+import { chainConfigsByIds, ChainId } from "@/lib/chains";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
-import {
-  defaultMainnet,
-  defaultTestnet,
-  ShielderConfig,
-} from "@/lib/storage/shielderConfig";
+import { defaultTestnet, ShielderConfig } from "@/lib/storage/shielderConfig";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 
@@ -14,23 +11,24 @@ export const useSwitchChain = () => {
 
   const mutation = useMutation({
     mutationKey: ["useSwitchCurrentChain"],
-    mutationFn: async (currentChain: "mainnet" | "testnet") => {
-      localStorage.setItem("currentChain", currentChain);
+    mutationFn: async (chainId: ChainId) => {
+      localStorage.setItem("currentChainId", chainId.toString());
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["currentChain"],
+        queryKey: ["currentChainId"],
       });
       if (isConnected) {
-        let newConfig: ShielderConfig | null = null;
-        if (localStorage.getItem("currentChain") === "mainnet") {
-          //   switchChainWagmi({ chainId: 41455 });
-          newConfig = defaultMainnet();
+        const chainIdRaw = localStorage.getItem("currentChainId");
+        if (!chainIdRaw) {
+          return defaultTestnet();
         }
-        if (localStorage.getItem("currentChain") === "testnet") {
-          //   switchChainWagmi({ chainId: 2039 });
-          newConfig = defaultTestnet();
+        const chainIdNumber = parseInt(chainIdRaw);
+        if (isNaN(chainIdNumber)) {
+          return defaultTestnet();
         }
+        const newConfig: ShielderConfig =
+          chainConfigsByIds[chainIdNumber as ChainId];
         await saveConfig.mutateAsync({
           shielderConfig: newConfig!,
         });

@@ -1,0 +1,2 @@
+export const PEPE_TOKEN_ADDRESS: `0x${string}` =
+  "0x44d945a446E604cd2B30F90b75340348c0097cAd";

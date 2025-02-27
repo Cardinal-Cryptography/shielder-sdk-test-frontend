@@ -10,12 +10,13 @@
     "preview": "tsx create-dotenv.ts && vite preview"
   },
   "dependencies": {
-    "@cardinal-cryptography/shielder-sdk": "0.2.0-alpha.1",
-    "@cardinal-cryptography/shielder-sdk-crypto": "0.2.0-alpha.1",
-    "@cardinal-cryptography/shielder-sdk-crypto-wasm": "0.2.0-alpha.3",
+    "@cardinal-cryptography/shielder-sdk": "0.2.0-beta.1",
+    "@cardinal-cryptography/shielder-sdk-crypto": "v0.2.0-beta.1",
+    "@cardinal-cryptography/shielder-sdk-crypto-wasm": "v0.2.0-beta.1",
     "@marsidev/react-turnstile": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",

@@ -1,17 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCcw } from "lucide-react";
 import ConfigSection from "@/components/ConfigSection";
 import ShieldModal from "@/components/ShieldModal";
 import useWasm from "@/lib/context/useWasm";
 import DependenciesAlert from "@/components/DependenciesAlert";
 import { useShielderClient } from "@/lib/context/useShielderClient";
-import { useShielderBalance } from "@/lib/context/useShielderBalance";
 import { Transactions } from "@/components/Transactions";
 import {
   accountChainIdSupported,
   clearShielderClientStorage,
-  formatEtherTrim,
 } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "@/components/SendModal";
@@ -20,7 +17,7 @@ import { ConnectKitButton } from "connectkit";
 import { Switch } from "@/components/ui/switch";
 import { useSaveConfig } from "@/lib/context/useSaveConfig";
 import { useConfig } from "@/lib/context/useConfig";
-import { PublicBalance } from "@/components/PublicBalance";
+import { TokenBalances } from "@/components/TokenBalances";
 import { useChain } from "@/lib/context/useChain";
 import { useSwitchChain } from "@/lib/context/useSwitchChain";
 import { useAccount } from "wagmi";
@@ -29,7 +26,6 @@ import { useChainId } from "@/lib/context/useChainId";
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();
   const { error } = useShielderClient();
-  const shielderBalance = useShielderBalance();
   const queryClient = useQueryClient();
   const { shielderConfig } = useConfig();
   const saveConfig = useSaveConfig();
@@ -64,8 +60,8 @@ const DashboardInterface = () => {
                     ) : accountChainId !== chainId ? (
                       <p className="text-red-500">
                         Switch to{" "}
-                        <span className="font-bold">{currentChain}</span> in
-                        wallet!
+                        <span className="font-bold">{currentChain.name}</span>{" "}
+                        in wallet!
                       </p>
                     ) : null
                   ) : null}
@@ -74,12 +70,12 @@ const DashboardInterface = () => {
                   <p> Testnet </p>
                   <Switch
                     className="data-[state=unchecked]:bg-green-500 data-[state=checked]:bg-red-500"
-                    checked={currentChain !== "testnet"}
+                    checked={currentChain.id !== 2039}
                     onCheckedChange={async (checked) => {
                       if (checked) {
-                        switchChain.mutate("mainnet");
+                        switchChain.mutate(41455);
                       } else {
-                        switchChain.mutate("testnet");
+                        switchChain.mutate(2039);
                       }
                       console.log(shielderConfig);
                       if (shielderConfig) {
@@ -162,18 +158,8 @@ const DashboardInterface = () => {
               </Button>
               <Faucet />
             </div>
-            {/* Public Balance */}
-            <PublicBalance />
-            {/* Private Balance */}
-            <Card>
-              <CardContent className="p-4">
-                <h2 className="text-lg font-semibold mb-4">Private Balance</h2>
-                <p className="text-2xl font-semibold">
-                  {formatEtherTrim(shielderBalance || 0n)}
-                </p>
-                <p className="text-sm text-gray-500">shielded account</p>
-              </CardContent>
-            </Card>
+            {/* Token Balances */}
+            <TokenBalances />
           </div>
 
           {/* Transactions List */}

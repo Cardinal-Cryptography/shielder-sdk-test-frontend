@@ -5,7 +5,7 @@ export const alephMainnet = defineChain({
   name: "Aleph Zero Mainnet",
   nativeCurrency: {
     decimals: 18,
-    name: "AZERO",
+    name: "Aleph Zero",
     symbol: "AZERO",
   },
   rpcUrls: {

@@ -4,8 +4,11 @@ import { useInsertTransaction } from "@/lib/transactions/newTransaction";
 import { shielderClientStorage } from "@/lib/utils";
 import {
   createShielderClient,
+  nativeToken,
+  erc20Token,
   ShielderTransaction,
 } from "@cardinal-cryptography/shielder-sdk";
+import { useTokenList } from "@/lib/context/useTokenList";
 import { useQuery } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
 import { sha256 } from "viem";
@@ -40,6 +43,10 @@ export const useShielderClient = () => {
   const chainId = useChainId();
   const { saveLatestProof } = useSaveLatestProof();
   const { toast } = useToast();
+  const tokens = useTokenList();
+
+  // Create an array of token addresses for the query key
+  const tokenAddresses = tokens.map((token) => token.address);
 
   const { data: shielderClient, error } = useQuery({
     queryKey: [
@@ -49,6 +56,7 @@ export const useShielderClient = () => {
       isWasmLoaded,
       chainId,
       kek,
+      ...tokenAddresses,
     ],
     queryFn: () => {
       if (!isWasmLoaded) {
@@ -102,7 +110,16 @@ export const useShielderClient = () => {
           },
         },
       );
-      client.syncShielder();
+      // Sync the native token
+      client.syncShielderToken(nativeToken());
+
+      // Sync all ERC20 tokens
+      for (const token of tokens) {
+        if (!token.isNative) {
+          client.syncShielderToken(erc20Token(token.address as `0x${string}`));
+        }
+      }
+
       return client;
     },
   });

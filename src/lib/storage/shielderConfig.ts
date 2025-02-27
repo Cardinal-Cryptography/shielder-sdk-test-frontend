@@ -36,7 +36,7 @@ export const clear = () => {
 
 export const defaultTestnet = (): ShielderConfig => {
   return {
-    shielderContractAddress: "0xEB05B73a4B512F71011d6C5Ba4d9A8419550d703",
+    shielderContractAddress: "0x68D624B7b18173b3F8C9880f5f45854C3c6a6800",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   };
 };

@@ -1,16 +1,22 @@
+import { ChainId, chainsByIds } from "@/lib/chains";
+import { alephTestnet } from "@/lib/chains/alephTestnet";
 import { useQuery } from "@tanstack/react-query";
 
 export const useChain = () => {
   const { data: chain } = useQuery({
-    queryKey: ["currentChain"],
+    queryKey: ["currentChainId"],
     queryFn: () => {
-      const chain = localStorage.getItem("currentChain");
-      if (!chain) {
-        return "testnet";
+      const chainIdRaw = localStorage.getItem("currentChainId");
+      if (!chainIdRaw) {
+        return alephTestnet;
       }
-      return chain as "testnet" | "mainnet";
+      const chainIdNumber = parseInt(chainIdRaw);
+      if (isNaN(chainIdNumber)) {
+        return alephTestnet;
+      }
+      return chainsByIds[chainIdNumber as ChainId];
     },
-    initialData: "testnet" as "testnet" | "mainnet",
+    initialData: alephTestnet,
   });
   return chain;
 };

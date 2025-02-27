@@ -20,9 +20,21 @@ const validateTxHash = z
   .regex(/^0x[0-9a-fA-F]{64}$/)
   .transform((val) => val as `0x${string}`);
 
+// Token schema based on the shielder-sdk Token type
+const tokenSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("native") }),
+  z.object({
+    type: z.literal("erc20"),
+    address: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]+$/)
+      .transform((val) => val as `0x${string}`),
+  }),
+]);
+
 const transactionsSchema = z.array(
   z.object({
-    type: z.enum(["NewAccountNative", "DepositNative", "WithdrawNative"]),
+    type: z.enum(["NewAccount", "Deposit", "Withdraw"]),
     amount: validateBigInt,
     to: z.string().optional(),
     txHash: validateTxHash,
@@ -30,6 +42,7 @@ const transactionsSchema = z.array(
     date: z.number(),
     txFee: validateBigInt,
     relayerFee: validateBigInt.optional(),
+    token: tokenSchema,
   }),
 );
 

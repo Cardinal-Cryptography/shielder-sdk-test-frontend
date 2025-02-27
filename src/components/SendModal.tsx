@@ -15,27 +15,83 @@ import { parseEther } from "viem";
 import { useConfig } from "@/lib/context/useConfig";
 import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
 import { useLatestProof } from "@/lib/context/useLatestProof";
+import {
+  nativeToken,
+  erc20Token,
+  shieldActionGasLimit,
+} from "@cardinal-cryptography/shielder-sdk";
+import { useAccount, useSendTransaction } from "wagmi";
+import { Switch } from "@/components/ui/switch";
+import { useTokenList } from "@/lib/context/useTokenList";
+import {
+  TokenSelector,
+  AmountInput,
+  useSelectedToken,
+} from "@/components/shared/tokens";
 
 const SendModal = () => {
   const [amount, setAmount] = useState("");
   const [addressTo, setAddressTo] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedTokenValue, setSelectedTokenValue] = useState<string>("");
   const { shielderClient } = useShielderClient();
   const { shielderConfig } = useConfig();
   const [isSending, setIsSending] = useState(false);
+  const [useManualWithdraw, setUseManualWithdraw] = useState(false);
   const latestProof = useLatestProof();
   const { reset: resetLatestProof } = useSaveLatestProof();
+  const { sendTransactionAsync } = useSendTransaction();
+  const { address: walletAddress } = useAccount();
+  const tokens = useTokenList();
+  const selectedToken = useSelectedToken(tokens, selectedTokenValue);
+  console.log(selectedToken);
 
   const handleSubmit = async () => {
     // Here you would typically handle the shield action
     const amountParsed = parseEther(amount);
-    const fees = await shielderClient!.getWithdrawFees();
     setIsSending(true);
-    await shielderClient!.withdraw(
-      amountParsed + fees.totalFee,
-      fees.totalFee,
-      addressTo as `0x${string}`,
-    );
+
+    try {
+      // Determine which token to use
+      const token =
+        !selectedTokenValue || selectedTokenValue === "native"
+          ? nativeToken()
+          : erc20Token(selectedTokenValue as `0x${string}`);
+
+      if (useManualWithdraw) {
+        // Use withdrawManual for manual transaction handling
+        await shielderClient!.withdrawManual(
+          token,
+          amountParsed,
+          addressTo as `0x${string}`,
+          async (params) => {
+            const txHash = await sendTransactionAsync!({
+              ...params,
+              gas: shieldActionGasLimit,
+            }).catch((e) => {
+              throw e;
+            });
+            return txHash;
+          },
+          walletAddress!,
+        );
+      } else {
+        const fees = await shielderClient!.getWithdrawFees();
+        // Use regular withdraw
+        await shielderClient!.withdraw(
+          token,
+          amountParsed + fees.totalFee,
+          fees.totalFee,
+          addressTo as `0x${string}`,
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      setIsSending(false);
+      setIsOpen(false);
+      return;
+    }
+
     setIsOpen(false);
     setIsSending(false);
     setAmount("");
@@ -51,6 +107,7 @@ const SendModal = () => {
         setIsSending(false);
         setAmount("");
         setAddressTo("");
+        setSelectedTokenValue("");
       }}
     >
       <DialogTrigger asChild>
@@ -64,42 +121,48 @@ const SendModal = () => {
           <DialogTitle>Withdraw Assets</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
+          <TokenSelector
+            tokens={tokens}
+            selectedTokenValue={selectedTokenValue}
+            onTokenChange={setSelectedTokenValue}
+          />
+          <AmountInput
+            amount={amount}
+            onAmountChange={setAmount}
+            selectedToken={selectedToken}
+            selectedTokenValue={selectedTokenValue}
+          />
           <div className="grid gap-2">
-            <Label htmlFor="amount">Amount</Label>
+            <Label htmlFor="address">To address</Label>
             <div className="relative">
               <Input
-                id="amount"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => {
-                  // Only allow numbers and decimal point
-                  const value = e.target.value.replace(/[^0-9.]/g, "");
-                  setAmount(value);
-                }}
-                className="pr-12"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-                AZERO
-              </span>
-            </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="amount">To address</Label>
-            <div className="relative">
-              <Input
-                id="amount"
+                id="address"
                 placeholder="Enter address"
                 value={addressTo}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setAddressTo(e.target.value);
                 }}
               />
             </div>
           </div>
+          <div className="flex items-center space-x-2 py-2">
+            <Switch
+              id="manual-mode"
+              checked={useManualWithdraw}
+              onCheckedChange={setUseManualWithdraw}
+            />
+            <Label htmlFor="manual-mode">Manual transaction mode</Label>
+          </div>
           <Button
             onClick={handleSubmit}
             className="w-full"
-            disabled={!amount || !shielderClient || !shielderConfig}
+            disabled={
+              !amount ||
+              !shielderClient ||
+              selectedToken == null ||
+              !shielderConfig ||
+              (useManualWithdraw && (!walletAddress || !sendTransactionAsync))
+            }
           >
             {isSending ? (
               // spinning loader
@@ -110,7 +173,9 @@ const SendModal = () => {
             {isSending
               ? !latestProof
                 ? "Generating Proof..."
-                : "Sending..."
+                : useManualWithdraw
+                  ? "Confirm transaction in Wallet"
+                  : "Sending..."
               : "Withdraw Assets"}
           </Button>
         </div>
