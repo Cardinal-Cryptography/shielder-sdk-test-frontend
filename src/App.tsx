@@ -6,6 +6,9 @@ import { alephTestnet } from "@/lib/chains/alephTestnet";
 import { WagmiProvider, createConfig } from "wagmi";
 import { alephMainnet } from "@/lib/chains/alephMainnet";
 import { Toaster } from "@/components/ui/toaster";
+import { arbitrumSepolia, baseSepolia, sepolia } from "viem/chains";
+import { sonicTestnet } from "@/lib/chains/sonicTestnet";
+import { monadTestnet } from "@/lib/chains/monadTestnet";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +22,15 @@ const wagmiChainConfig = createConfig(
   getDefaultConfig({
     appName: "Shielder-sdk test",
     walletConnectProjectId: "3bb69ec675f4b9c573beff23fc19ebdc",
-    chains: [alephTestnet, alephMainnet],
+    chains: [
+      alephTestnet,
+      alephMainnet,
+      arbitrumSepolia,
+      baseSepolia,
+      sepolia,
+      sonicTestnet,
+      monadTestnet,
+    ],
   }),
 );
 

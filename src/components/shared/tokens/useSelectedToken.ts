@@ -6,9 +6,9 @@ import { SelectedToken } from "./types";
 export const useSelectedToken = (
   tokens: Token[],
   selectedTokenValue: string,
-): SelectedToken | null => {
+): SelectedToken | undefined => {
   return useMemo(() => {
-    if (!selectedTokenValue) return null;
+    if (!selectedTokenValue) return undefined;
 
     // Check if it's a token from the list
     const token = tokens.find(
@@ -30,6 +30,6 @@ export const useSelectedToken = (
       };
     }
 
-    return null;
+    return undefined;
   }, [tokens, selectedTokenValue]);
 };

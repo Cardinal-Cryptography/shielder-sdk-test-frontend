@@ -1,22 +1,23 @@
-import { useConfig } from "@/lib/context/useConfig";
+import { useLocalSeed } from "@/lib/context/useLocalSeed";
 import useWasm from "@/lib/context/useWasm";
 import { useInsertTransaction } from "@/lib/transactions/newTransaction";
-import { shielderClientStorage } from "@/lib/utils";
 import {
   createShielderClient,
-  nativeToken,
   erc20Token,
+  nativeToken,
   ShielderTransaction,
 } from "@cardinal-cryptography/shielder-sdk";
-import { useTokenList } from "@/lib/context/useTokenList";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
 import { sha256 } from "viem";
-import { useChains } from "wagmi";
-import { useSaveLatestProof } from "@/lib/context/useSaveLatestProof";
+import { useSaveLatestProof } from "@/lib/shielder/useSaveLatestProof";
 import { useToast } from "@/lib/context/useToast";
-import { useChainId } from "@/lib/context/useChainId";
 import { wasmCryptoClient } from "@/lib/providers/WasmProvider";
+import { useChain } from "@/lib/context/useChain";
+import { ChainId } from "@/lib/chains";
+import { fromLocalStorage } from "@/lib/storage/shielderClient";
+import { useTokenList } from "@/lib/tokens/useTokenList";
+import { useTransactions } from "@/lib/transactions/useTransactions";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -36,45 +37,36 @@ const deriveShielderPrivateKey = (mnemonic: string) => {
 };
 
 export const useShielderClient = () => {
-  const { shielderConfig, seedMnemonicConfig, kek } = useConfig();
-  const insertTransaction = useInsertTransaction();
+  const queryClient = useQueryClient();
+  const { data: localSeedConfig } = useLocalSeed();
   const { isWasmLoaded } = useWasm();
-  const chains = useChains();
-  const chainId = useChainId();
+  const { data: chainData } = useChain();
   const { saveLatestProof } = useSaveLatestProof();
+  const insertTransaction = useInsertTransaction();
   const { toast } = useToast();
   const tokens = useTokenList();
+  const { refetch: refetchTransactions } = useTransactions();
 
   // Create an array of token addresses for the query key
-  const tokenAddresses = tokens.map((token) => token.address);
 
-  const { data: shielderClient, error } = useQuery({
+  return useQuery({
     queryKey: [
       "shielderClient",
-      shielderConfig,
-      seedMnemonicConfig,
+      localSeedConfig,
       isWasmLoaded,
-      chainId,
-      kek,
-      ...tokenAddresses,
+      chainData,
+      tokens,
     ],
     queryFn: () => {
       if (!isWasmLoaded) {
         throw new Error("Wasm not loaded");
       }
-      const currentConfig = chains.find((c) => c.id === chainId);
-      if (!currentConfig) {
-        throw new Error("Chain config not available");
+      if (!chainData) {
+        throw new Error("Chain not available");
       }
-      const publicRpcUrl = currentConfig.rpcUrls.default.http[0];
-      if (!shielderConfig) {
-        throw new Error("Config not available");
-      }
-      if (!seedMnemonicConfig) {
-        throw new Error("Seed mnemonic config not available");
-      }
-      if (!seedMnemonicConfig.shielderSeedMnemonic) {
-        throw new Error("Shielder seed mnemonic not available");
+      const { chain, shielderConfig } = chainData;
+      if (!localSeedConfig.seedMnemonicConfig?.shielderSeedMnemonic) {
+        throw new Error("Configure Shielder seed mnemonic");
       }
       if (!shielderConfig.shielderContractAddress) {
         throw new Error("Shielder contract address not available");
@@ -82,16 +74,17 @@ export const useShielderClient = () => {
       if (!shielderConfig.relayerUrl) {
         throw new Error("Relayer URL not available");
       }
-      if (!chainId) {
-        throw new Error("Chain ID not available");
-      }
+      const publicRpcUrl = chain.rpcUrls.default.http[0];
+
       const client = createShielderClient(
-        deriveShielderPrivateKey(seedMnemonicConfig.shielderSeedMnemonic),
-        chainId,
+        deriveShielderPrivateKey(
+          localSeedConfig.seedMnemonicConfig?.shielderSeedMnemonic,
+        ),
+        chain.id,
         publicRpcUrl,
         shielderConfig.shielderContractAddress as `0x${string}`,
         shielderConfig.relayerUrl,
-        shielderClientStorage,
+        fromLocalStorage(chain.id as ChainId),
         wasmCryptoClient!,
         {
           onNewTransaction: async (tx: ShielderTransaction) => {
@@ -99,6 +92,10 @@ export const useShielderClient = () => {
             toast({
               title: "Transaction completed",
               description: `Transaction ${tx.type} completed`,
+            });
+            refetchTransactions();
+            queryClient.invalidateQueries({
+              queryKey: ["tokenBalance", tx.token],
             });
           },
           onCalldataGenerated: async (calldata) => {
@@ -123,5 +120,4 @@ export const useShielderClient = () => {
       return client;
     },
   });
-  return { shielderClient, error };
 };

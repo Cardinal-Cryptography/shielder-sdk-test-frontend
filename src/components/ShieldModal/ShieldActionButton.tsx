@@ -7,7 +7,6 @@ const ShieldActionButton = ({
   isApproving,
   needsApproval,
   amount,
-  shielderClient,
   walletAddress,
   latestProof,
   isTokenSelected,
@@ -52,7 +51,6 @@ const ShieldActionButton = ({
       className="w-full"
       disabled={
         !amount ||
-        !shielderClient ||
         !walletAddress ||
         (isShielding && !latestProof) ||
         isApproving

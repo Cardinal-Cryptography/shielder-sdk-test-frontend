@@ -1,9 +1,13 @@
-import { clear } from "@/lib/storage/transactions";
+import { Token } from "@/lib/tokens/types";
 import { initWasmWorker } from "@cardinal-cryptography/shielder-sdk-crypto-wasm";
-import { QueryClient } from "@tanstack/react-query";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatEther } from "viem";
+import {
+  erc20Token,
+  nativeToken,
+  Token as SDKToken,
+} from "@cardinal-cryptography/shielder-sdk";
 
 export const wasmCryptoClientRead = initWasmWorker(
   navigator.hardwareConcurrency,
@@ -12,36 +16,6 @@ export const wasmCryptoClientRead = initWasmWorker(
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export const shielderClientStorage = {
-  getItem: async (key: string): Promise<string | null> => {
-    const shielderClientNamespaced = localStorage.getItem("shielderClient");
-    if (!shielderClientNamespaced) {
-      return null;
-    }
-    const shielderClient = JSON.parse(shielderClientNamespaced);
-    return shielderClient[key];
-  },
-  setItem: async (key: string, value: string): Promise<void> => {
-    const shielderClientNamespaced = localStorage.getItem("shielderClient");
-    const shielderClient = shielderClientNamespaced
-      ? JSON.parse(shielderClientNamespaced)
-      : {};
-    shielderClient[key] = value;
-    localStorage.setItem("shielderClient", JSON.stringify(shielderClient));
-  },
-};
-
-export const clearShielderClientStorage = async (queryClient: QueryClient) => {
-  localStorage.removeItem("shielderClient");
-  clear();
-  await queryClient.invalidateQueries({
-    queryKey: ["transactions"],
-  });
-  await queryClient.invalidateQueries({
-    queryKey: ["shielderClient"],
-  });
-};
 
 export const formatEtherTrim = (wei: bigint) => {
   const ether = formatEther(wei);
@@ -58,5 +32,28 @@ export const formatHash = (hash: string) => {
 };
 
 export const accountChainIdSupported = (chainId: number | undefined) => {
-  return chainId === undefined || chainId === 2039 || chainId === 41455;
+  return (
+    chainId === undefined ||
+    chainId === 2039 ||
+    chainId === 41455 ||
+    chainId === 421614 ||
+    chainId === 84532 ||
+    chainId === 11155111
+  );
+};
+
+export const tokenToSdkToken = (token: Token): SDKToken => {
+  if (token.isNative) {
+    return nativeToken();
+  } else {
+    return erc20Token(token.address!);
+  }
+};
+
+export const bigintQueryHashKey = <T>(queryKey: T) => {
+  return JSON.stringify(
+    queryKey,
+    // handle bigints
+    (_, value) => (typeof value === "bigint" ? value.toString() : value),
+  );
 };

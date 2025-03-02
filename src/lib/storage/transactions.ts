@@ -1,3 +1,4 @@
+import { ChainId } from "@/lib/chains";
 import { z } from "zod";
 
 const storageKey = "transactions";
@@ -48,8 +49,8 @@ const transactionsSchema = z.array(
 
 export type Transactions = z.infer<typeof transactionsSchema>;
 
-export const fromLocalStorage = (): Transactions | null => {
-  const transactions = localStorage.getItem(storageKey);
+export const fromLocalStorage = (chainId: ChainId): Transactions | null => {
+  const transactions = localStorage.getItem(storageKey + chainId.toString());
   if (!transactions) {
     return null;
   }
@@ -57,13 +58,13 @@ export const fromLocalStorage = (): Transactions | null => {
   return parsed;
 };
 
-export const save = (transactions: Transactions) => {
+export const save = (chainId: ChainId, transactions: Transactions) => {
   const stringValue = JSON.stringify(transactions, (_, value): string =>
     typeof value === "bigint" ? value.toString() : value,
   );
-  localStorage.setItem(storageKey, stringValue);
+  localStorage.setItem(storageKey + chainId.toString(), stringValue);
 };
 
-export const clear = () => {
-  localStorage.removeItem(storageKey);
+export const clear = (chainId: ChainId) => {
+  localStorage.removeItem(storageKey + chainId.toString());
 };

@@ -1,4 +1,4 @@
-import { useTokenList } from "@/lib/context/useTokenList";
+import { useTokenList } from "@/lib/tokens/useTokenList";
 import { formatEtherTrim, formatHash } from "@/lib/utils";
 import { Transaction } from "./types";
 import {
@@ -7,6 +7,7 @@ import {
 } from "./TransactionTypeDisplay";
 import { useMemo } from "react";
 import { ERC20Token } from "@cardinal-cryptography/shielder-sdk";
+import { useNativeToken } from "@/lib/tokens/useNativeToken";
 
 interface TransactionItemProps {
   transaction: Transaction;
@@ -18,6 +19,7 @@ export const TransactionItem = ({
   blockExplorerUrl,
 }: TransactionItemProps) => {
   const tokenList = useTokenList();
+  const nativeToken = useNativeToken();
 
   const formattedDate = useMemo(
     () => new Date(transaction.date).toLocaleString(),
@@ -38,10 +40,10 @@ export const TransactionItem = ({
   );
 
   const tokenSymbol = useMemo(() => {
-    if (!transaction.token) return tokenList[0].symbol; // Default to native token
+    if (!transaction.token) return nativeToken?.symbol; // Default to native token
 
     if (transaction.token.type === "native") {
-      return tokenList[0].symbol; // Native token is always first in the list
+      return nativeToken?.symbol; // Native token is always first in the list
     } else if (transaction.token.type === "erc20") {
       // Find the matching ERC20 token by address
       const erc20Token = tokenList.find(
@@ -54,7 +56,7 @@ export const TransactionItem = ({
     }
 
     return tokenList[0].symbol; // Default fallback
-  }, [transaction.token, tokenList]);
+  }, [transaction.token, tokenList, nativeToken]);
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">

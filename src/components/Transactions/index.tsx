@@ -1,24 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useChainId } from "@/lib/context/useChainId";
 import { useTransactions } from "@/lib/transactions/useTransactions";
 import { useMemo } from "react";
-import { useChains } from "wagmi";
 import { TransactionItem } from "./TransactionItem";
+import { useChain } from "@/lib/context/useChain";
 
 export const Transactions = () => {
-  const transactions = useTransactions();
-  const chains = useChains();
-  const chainId = useChainId();
+  const { data: chainData } = useChain();
+  const { data: transactions } = useTransactions();
 
-  const currentChainConfig = useMemo(
-    () => chains.find((c) => c.id === chainId),
-    [chains, chainId],
-  );
-
-  const blockExplorerUrl = useMemo(
-    () => currentChainConfig?.blockExplorers?.default.url,
-    [currentChainConfig],
-  );
+  const blockExplorerUrl = chainData?.chain.blockExplorers?.default.url;
 
   const sortedTransactions = useMemo(
     () =>

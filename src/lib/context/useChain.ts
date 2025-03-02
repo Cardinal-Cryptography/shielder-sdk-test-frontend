@@ -1,22 +1,29 @@
-import { ChainId, chainsByIds } from "@/lib/chains";
-import { alephTestnet } from "@/lib/chains/alephTestnet";
+import { ChainId, shielderConfigByChainId } from "@/lib/chains";
+import {
+  fromLocalStorage as localShielder,
+  save,
+} from "@/lib/storage/shielderConfig";
 import { useQuery } from "@tanstack/react-query";
+import { useAccount } from "wagmi";
 
 export const useChain = () => {
-  const { data: chain } = useQuery({
-    queryKey: ["currentChainId"],
+  const { chain } = useAccount();
+  return useQuery({
+    queryKey: ["config", chain],
     queryFn: () => {
-      const chainIdRaw = localStorage.getItem("currentChainId");
-      if (!chainIdRaw) {
-        return alephTestnet;
+      if (!chain) {
+        throw new Error("Chain not available");
       }
-      const chainIdNumber = parseInt(chainIdRaw);
-      if (isNaN(chainIdNumber)) {
-        return alephTestnet;
+      const chainId = chain.id as ChainId;
+      let shielderConfig = localShielder(chainId);
+      if (!shielderConfig) {
+        save(chainId, shielderConfigByChainId[chainId]);
+        shielderConfig = shielderConfigByChainId[chain.id as ChainId];
       }
-      return chainsByIds[chainIdNumber as ChainId];
+      return {
+        chain,
+        shielderConfig,
+      };
     },
-    initialData: alephTestnet,
   });
-  return chain;
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,69 +6,53 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { parseEther } from "viem";
-import { useAccount } from "wagmi";
-import { useLatestProof } from "@/lib/shielder/useLatestProof";
 import { useSaveLatestProof } from "@/lib/shielder/useSaveLatestProof";
+import { useLatestProof } from "@/lib/shielder/useLatestProof";
+import { useAccount } from "wagmi";
+import { Switch } from "@/components/ui/switch";
 import { useTokenList } from "@/lib/tokens/useTokenList";
-
-import ShieldButton from "./ShieldButton";
-import ShieldActionButton from "./ShieldActionButton";
 import {
   TokenSelector,
   AmountInput,
   useSelectedToken,
 } from "@/components/shared/tokens";
-import { useTokenAllowance } from "@/lib/tokens/useTokenAllowance";
-import { useShield } from "@/lib/shielder/useShield";
+import WithdrawButton from "./WithdrawButton";
+import WithdrawActionButton from "./WithdrawActionButton";
+import { useWithdraw } from "@/lib/shielder/useWithdraw";
 import { useNativeToken } from "@/lib/tokens/useNativeToken";
 import { useShielderClient } from "@/lib/shielder/useShielderClient";
 
-const ShieldModal = () => {
+const SendModal = () => {
   // State
   const [amount, setAmount] = useState("");
+  const [addressTo, setAddressTo] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTokenValue, setSelectedTokenValue] = useState<string>("");
-  const [needsApproval, setNeedsApproval] = useState(false);
+  const [useManualWithdraw, setUseManualWithdraw] = useState(false);
 
   // Hooks
-  const { address: walletAddress, isConnected, chain } = useAccount();
   const latestProof = useLatestProof();
   const { reset: resetLatestProof } = useSaveLatestProof();
+  const { address: walletAddress, isConnected, chain } = useAccount();
   const nativeToken = useNativeToken();
   const tokens = [nativeToken!, ...useTokenList()];
   const selectedToken = useSelectedToken(tokens, selectedTokenValue);
+
   const { data: shielderClient } = useShielderClient();
 
-  const { data: shieldData, shield } = useShield({
+  const { data: withdrawData, withdraw } = useWithdraw({
     token: selectedToken,
   });
-
-  const { data: allowanceData, approve: approveToken } = useTokenAllowance({
-    fromAddress: walletAddress,
-    tokenAddress: selectedToken?.address as `0x${string}`,
-  });
-
-  // Check if approval is needed when amount or selected token changes
-  useEffect(() => {
-    if (
-      selectedToken &&
-      !selectedToken.isNative &&
-      amount &&
-      allowanceData?.tokenAllowance !== undefined
-    ) {
-      const amountParsed = parseEther(amount);
-      setNeedsApproval(amountParsed > allowanceData.tokenAllowance);
-    } else {
-      setNeedsApproval(false);
-    }
-  }, [amount, selectedToken, allowanceData]);
 
   // Handlers
   const handleOpenChange = (open: boolean) => {
     resetLatestProof.mutate();
     setIsOpen(open);
     setAmount("");
+    setAddressTo("");
 
     // Reset token selection when modal is closed
     if (!open) {
@@ -76,39 +60,37 @@ const ShieldModal = () => {
     }
   };
 
-  // Handle token approval
-  const handleApproveToken = async () => {
-    if (!selectedToken || selectedToken.isNative || !amount) {
-      return;
-    }
-    approveToken(parseEther("1000000000"));
-  };
-
   const handleSubmit = async () => {
     const amountParsed = parseEther(amount);
     try {
-      await shield(amountParsed);
+      await withdraw(
+        amountParsed,
+        addressTo as `0x${string}`,
+        useManualWithdraw,
+      );
     } catch (e) {
       console.error(e);
       setIsOpen(false);
       setSelectedTokenValue("");
+      return;
     }
     setIsOpen(false);
     setAmount("");
+    setAddressTo("");
     setSelectedTokenValue("");
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <ShieldButton
+        <WithdrawButton
           disabled={!(isConnected && chain && shielderClient)}
           onClick={() => setIsOpen(true)}
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Shield Assets</DialogTitle>
+          <DialogTitle>Withdraw Assets</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <TokenSelector
@@ -122,15 +104,36 @@ const ShieldModal = () => {
             selectedToken={selectedToken}
             selectedTokenValue={selectedTokenValue}
           />
-          <ShieldActionButton
+          <div className="grid gap-2">
+            <Label htmlFor="address">To address</Label>
+            <div className="relative">
+              <Input
+                id="address"
+                placeholder="Enter address"
+                value={addressTo}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setAddressTo(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex items-center space-x-2 py-2">
+            <Switch
+              id="manual-mode"
+              checked={useManualWithdraw}
+              onCheckedChange={setUseManualWithdraw}
+            />
+            <Label htmlFor="manual-mode">Manual transaction mode</Label>
+          </div>
+          <WithdrawActionButton
             isTokenSelected={!!selectedToken}
-            isShielding={shieldData?.isShielding ?? false}
-            isApproving={allowanceData?.isApproving ?? false}
-            needsApproval={needsApproval}
+            isSending={withdrawData?.isSending ?? false}
             amount={amount}
+            addressTo={addressTo}
             walletAddress={walletAddress}
             latestProof={latestProof}
-            onSubmit={needsApproval ? handleApproveToken : handleSubmit}
+            useManualWithdraw={useManualWithdraw}
+            onSubmit={handleSubmit}
           />
         </div>
       </DialogContent>
@@ -138,4 +141,4 @@ const ShieldModal = () => {
   );
 };
 
-export default ShieldModal;
+export default SendModal;

@@ -13,6 +13,6 @@ export interface TokenSelectorProps {
 export interface AmountInputProps {
   amount: string;
   onAmountChange: (value: string) => void;
-  selectedToken: SelectedToken | null;
+  selectedToken: SelectedToken | undefined;
   selectedTokenValue: string;
 }

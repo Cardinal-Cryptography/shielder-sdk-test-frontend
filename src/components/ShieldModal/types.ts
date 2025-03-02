@@ -5,8 +5,7 @@ export interface SelectedToken extends Token {
 }
 
 export interface ShieldButtonProps {
-  isConnected: boolean;
-  accountChainIdSupported: boolean;
+  disabled: boolean;
   onClick: () => void;
 }
 
@@ -29,7 +28,6 @@ export interface ShieldActionButtonProps {
   isApproving: boolean;
   needsApproval: boolean;
   amount: string;
-  shielderClient: unknown;
   walletAddress: string | undefined;
   latestProof: number | null;
   onSubmit: () => Promise<void>;
