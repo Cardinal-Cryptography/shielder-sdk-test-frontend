@@ -3,8 +3,6 @@ import useWasm from "@/lib/context/useWasm";
 import { useInsertTransaction } from "@/lib/transactions/newTransaction";
 import {
   createShielderClient,
-  erc20Token,
-  nativeToken,
   ShielderTransaction,
 } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,8 +14,8 @@ import { wasmCryptoClient } from "@/lib/providers/WasmProvider";
 import { useChain } from "@/lib/context/useChain";
 import { ChainId } from "@/lib/chains";
 import { fromLocalStorage } from "@/lib/storage/shielderClient";
-import { useTokenList } from "@/lib/tokens/useTokenList";
 import { useTransactions } from "@/lib/transactions/useTransactions";
+import { usePublicClient } from "wagmi";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -44,8 +42,11 @@ export const useShielderClient = () => {
   const { saveLatestProof } = useSaveLatestProof();
   const insertTransaction = useInsertTransaction();
   const { toast } = useToast();
-  const tokens = useTokenList();
   const { refetch: refetchTransactions } = useTransactions();
+
+  const publicClient = usePublicClient({
+    chainId: chainData?.chain.id,
+  });
 
   // Create an array of token addresses for the query key
 
@@ -55,7 +56,7 @@ export const useShielderClient = () => {
       localSeedConfig,
       isWasmLoaded,
       chainData,
-      tokens,
+      publicClient,
     ],
     queryFn: () => {
       if (!isWasmLoaded) {
@@ -63,6 +64,9 @@ export const useShielderClient = () => {
       }
       if (!chainData) {
         throw new Error("Chain not available");
+      }
+      if (!publicClient) {
+        throw new Error("Public client not available");
       }
       const { chain, shielderConfig } = chainData;
       if (!localSeedConfig.seedMnemonicConfig?.shielderSeedMnemonic) {
@@ -74,19 +78,19 @@ export const useShielderClient = () => {
       if (!shielderConfig.relayerUrl) {
         throw new Error("Relayer URL not available");
       }
-      const publicRpcUrl = chain.rpcUrls.default.http[0];
 
-      const client = createShielderClient(
-        deriveShielderPrivateKey(
+      const client = createShielderClient({
+        shielderSeedPrivateKey: deriveShielderPrivateKey(
           localSeedConfig.seedMnemonicConfig?.shielderSeedMnemonic,
         ),
-        chain.id,
-        publicRpcUrl,
-        shielderConfig.shielderContractAddress as `0x${string}`,
-        shielderConfig.relayerUrl,
-        fromLocalStorage(chain.id as ChainId),
-        wasmCryptoClient!,
-        {
+        chainId: BigInt(chain.id),
+        publicClient,
+        contractAddress:
+          shielderConfig.shielderContractAddress as `0x${string}`,
+        relayerUrl: shielderConfig.relayerUrl,
+        storage: fromLocalStorage(chain.id as ChainId),
+        cryptoClient: wasmCryptoClient!,
+        callbacks: {
           onNewTransaction: async (tx: ShielderTransaction) => {
             await insertTransaction.mutateAsync(tx);
             toast({
@@ -106,16 +110,9 @@ export const useShielderClient = () => {
             });
           },
         },
-      );
+      });
       // Sync the native token
-      client.syncShielderToken(nativeToken());
-
-      // Sync all ERC20 tokens
-      for (const token of tokens) {
-        if (!token.isNative) {
-          client.syncShielderToken(erc20Token(token.address as `0x${string}`));
-        }
-      }
+      client.syncShielder();
 
       return client;
     },

@@ -3,12 +3,18 @@ import DashboardInterface from "./components/DashboardInterface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getDefaultConfig, ConnectKitProvider } from "connectkit";
 import { alephTestnet } from "@/lib/chains/alephTestnet";
-import { WagmiProvider, createConfig } from "wagmi";
-import { alephMainnet } from "@/lib/chains/alephMainnet";
+import {
+  WagmiProvider,
+  createConfig,
+  fallback,
+  http,
+  injected,
+  unstable_connector,
+} from "wagmi";
 import { Toaster } from "@/components/ui/toaster";
-import { arbitrumSepolia, baseSepolia, sepolia } from "viem/chains";
-import { sonicTestnet } from "@/lib/chains/sonicTestnet";
+import { arbitrumSepolia, baseSepolia, sepolia } from "wagmi/chains";
 import { monadTestnet } from "@/lib/chains/monadTestnet";
+import { sonicTestnet } from "@/lib/chains/sonicTestnet";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,16 +27,24 @@ const queryClient = new QueryClient({
 const wagmiChainConfig = createConfig(
   getDefaultConfig({
     appName: "Shielder-sdk test",
+    connectors: [injected()],
     walletConnectProjectId: "3bb69ec675f4b9c573beff23fc19ebdc",
     chains: [
       alephTestnet,
-      alephMainnet,
       arbitrumSepolia,
       baseSepolia,
       sepolia,
-      sonicTestnet,
       monadTestnet,
+      sonicTestnet,
     ],
+    transports: {
+      [alephTestnet.id]: fallback([unstable_connector(injected), http()]),
+      [arbitrumSepolia.id]: fallback([unstable_connector(injected), http()]),
+      [baseSepolia.id]: fallback([unstable_connector(injected), http()]),
+      [sepolia.id]: fallback([unstable_connector(injected), http()]),
+      [monadTestnet.id]: fallback([unstable_connector(injected), http()]),
+      [sonicTestnet.id]: fallback([unstable_connector(injected), http()]),
+    },
   }),
 );
 

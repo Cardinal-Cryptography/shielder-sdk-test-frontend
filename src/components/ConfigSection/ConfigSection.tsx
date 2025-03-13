@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import MnemonicConfig from "@/components/ConfigSection/MnemonicConfig";
-import ShielderConfig from "@/components/ConfigSection/ShielderConfig";
 
 const ConfigSection = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -31,9 +30,6 @@ const ConfigSection = () => {
         <div className="w-full" ref={formRef}>
           <h1 className="text-xl font-bold mb-4">Configuration</h1>
           <MnemonicConfig />
-          <div className="mt-8">
-            <ShielderConfig />
-          </div>
           <Button
             className="w-full mb-4 mt-8"
             onClick={async () => {

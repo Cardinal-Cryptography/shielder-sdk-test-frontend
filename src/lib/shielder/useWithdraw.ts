@@ -1,11 +1,7 @@
 import { useTokenBalance } from "@/lib/balances/useTokenBalance";
 import { useShielderClient } from "@/lib/shielder/useShielderClient";
 import { Token } from "@/lib/tokens/types";
-import {
-  erc20Token,
-  nativeToken,
-  shieldActionGasLimit,
-} from "@cardinal-cryptography/shielder-sdk";
+import { erc20Token, nativeToken } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAccount, useSendTransaction } from "wagmi";
@@ -43,7 +39,7 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
           async (params) => {
             const txHash = await sendTransactionAsync!({
               ...params,
-              gas: shieldActionGasLimit,
+              // gas: shieldActionGasLimit,
             }).catch((e) => {
               throw e;
             });

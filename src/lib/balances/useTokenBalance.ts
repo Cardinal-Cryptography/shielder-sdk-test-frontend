@@ -27,8 +27,6 @@ export const useTokenBalance = ({ token }: { token: Token | undefined }) => {
 
   const { data: shielderClient } = useShielderClient();
 
-  console.log(chain, token, nativeBalance, erc20Balance, shielderClient);
-
   const query = useQuery({
     queryKey: [
       "tokenBalance",
@@ -51,11 +49,11 @@ export const useTokenBalance = ({ token }: { token: Token | undefined }) => {
       }
 
       const privateBalance = shielderClient
-        ? (
+        ? ((
             await shielderClient.accountState(
               token.isNative ? nativeToken() : erc20Token(token.address!),
             )
-          ).balance
+          )?.balance ?? 0n)
         : 0n;
       if (token.isNative) {
         if (!nativeBalance) {

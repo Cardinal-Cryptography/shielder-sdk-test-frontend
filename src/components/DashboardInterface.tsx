@@ -3,7 +3,7 @@ import ShieldModal from "@/components/ShieldModal";
 import SendModal from "@/components/SendModal";
 import useWasm from "@/lib/context/useWasm";
 import DependenciesAlert from "@/components/DependenciesAlert";
-import Faucet from "@/components/Faucet";
+
 import { ConnectKitButton } from "connectkit";
 import {
   Select,
@@ -18,6 +18,7 @@ import { ResyncButton } from "@/components/ResyncButton";
 import { Transactions } from "@/components/Transactions";
 import { TokenBalances } from "@/components/TokenBalances";
 import { useLocalSeed } from "@/lib/context/useLocalSeed";
+import Faucet from "@/components/Faucet/Faucet";
 
 const DashboardInterface = () => {
   const { isWasmLoaded } = useWasm();

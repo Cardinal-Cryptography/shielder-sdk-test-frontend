@@ -31,7 +31,7 @@ const SendModal = () => {
   const [addressTo, setAddressTo] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTokenValue, setSelectedTokenValue] = useState<string>("");
-  const [useManualWithdraw, setUseManualWithdraw] = useState(false);
+  const [useManualWithdraw] = useState(true);
 
   // Hooks
   const latestProof = useLatestProof();
@@ -121,7 +121,7 @@ const SendModal = () => {
             <Switch
               id="manual-mode"
               checked={useManualWithdraw}
-              onCheckedChange={setUseManualWithdraw}
+              // onCheckedChange={setUseManualWithdraw}
             />
             <Label htmlFor="manual-mode">Manual transaction mode</Label>
           </div>

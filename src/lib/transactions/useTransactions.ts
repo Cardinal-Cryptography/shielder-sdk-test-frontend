@@ -13,7 +13,6 @@ export const useTransactions = () => {
       }
       const transactions =
         fromLocalStorage(chainData.chain.id as ChainId) ?? [];
-      console.log(transactions);
       return transactions;
     },
   });
