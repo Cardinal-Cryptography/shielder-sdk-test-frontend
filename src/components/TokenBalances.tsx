@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatEtherTrim } from "@/lib/utils";
+import { formatAmountTrim } from "@/lib/utils";
 import { CopyContent } from "@/components/ui/copy-content";
 import { Token } from "@/lib/tokens/types";
 import { useTokenBalance } from "@/lib/balances/useTokenBalance";
@@ -16,8 +16,12 @@ const TokenBalance = ({ token }: { token: Token }) => {
         <div>{token.symbol}</div>
         {token.address && <CopyContent content={token.address} />}
       </div>
-      <div>{formatEtherTrim(tokenBalance?.publicBalance ?? 0n)}</div>
-      <div>{formatEtherTrim(tokenBalance?.privateBalance ?? 0n)}</div>
+      <div>
+        {formatAmountTrim(tokenBalance?.publicBalance ?? 0n, token.decimals)}
+      </div>
+      <div>
+        {formatAmountTrim(tokenBalance?.privateBalance ?? 0n, token.decimals)}
+      </div>
     </div>
   );
 };

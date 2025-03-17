@@ -6,7 +6,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useLatestProof } from "@/lib/shielder/useLatestProof";
 import { useSaveLatestProof } from "@/lib/shielder/useSaveLatestProof";
@@ -23,6 +22,7 @@ import { useTokenAllowance } from "@/lib/tokens/useTokenAllowance";
 import { useShield } from "@/lib/shielder/useShield";
 import { useNativeToken } from "@/lib/tokens/useNativeToken";
 import { useShielderClient } from "@/lib/shielder/useShielderClient";
+import { parseDecimals } from "@/lib/utils";
 
 const ShieldModal = () => {
   // State
@@ -37,7 +37,7 @@ const ShieldModal = () => {
   const { reset: resetLatestProof } = useSaveLatestProof();
   const nativeToken = useNativeToken();
   const tokens = [nativeToken!, ...useTokenList()];
-  const selectedToken = useSelectedToken(tokens, selectedTokenValue);
+  const { data: selectedToken } = useSelectedToken(tokens, selectedTokenValue);
   const { data: shielderClient } = useShielderClient();
 
   const { data: shieldData, shield } = useShield({
@@ -57,7 +57,7 @@ const ShieldModal = () => {
       amount &&
       allowanceData?.tokenAllowance !== undefined
     ) {
-      const amountParsed = parseEther(amount);
+      const amountParsed = parseDecimals(amount, selectedToken.decimals);
       setNeedsApproval(amountParsed > allowanceData.tokenAllowance);
     } else {
       setNeedsApproval(false);
@@ -81,11 +81,11 @@ const ShieldModal = () => {
     if (!selectedToken || selectedToken.isNative || !amount) {
       return;
     }
-    approveToken(parseEther("1000000000"));
+    approveToken(parseDecimals("1000000000", selectedToken?.decimals));
   };
 
   const handleSubmit = async () => {
-    const amountParsed = parseEther(amount);
+    const amountParsed = parseDecimals(amount, selectedToken?.decimals);
     try {
       await shield(amountParsed);
     } catch (e) {

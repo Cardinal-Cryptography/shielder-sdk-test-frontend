@@ -16,7 +16,7 @@ const AmountInput = ({
 
   const displaySymbol =
     selectedToken?.symbol ||
-    (selectedTokenValue && selectedTokenValue !== "native" ? "Custom" : "");
+    (selectedTokenValue && selectedTokenValue !== "native" ? "Loading..." : "");
 
   return (
     <div className="grid gap-2">

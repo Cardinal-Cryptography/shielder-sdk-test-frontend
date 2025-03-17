@@ -2,34 +2,62 @@ import { useMemo } from "react";
 import { isAddress } from "viem";
 import { Token } from "@/lib/tokens/types";
 import { SelectedToken } from "./types";
+import { getTokenByAddress } from "@/lib/tokens/getTokenByAddress";
+import { useQuery } from "@tanstack/react-query";
+import { useClient } from "wagmi";
+import { bigintQueryHashKey } from "@/lib/utils";
 
 export const useSelectedToken = (
   tokens: Token[],
   selectedTokenValue: string,
-): SelectedToken | undefined => {
-  return useMemo(() => {
+) => {
+  const client = useClient();
+
+  // Find token from the list
+  const listToken = useMemo(() => {
     if (!selectedTokenValue) return undefined;
 
-    // Check if it's a token from the list
-    const token = tokens.find(
+    return tokens.find(
       (token) =>
         (token.isNative && selectedTokenValue === "native") ||
         (!token.isNative && token.address === selectedTokenValue),
-    );
-
-    if (token) return token as SelectedToken;
-
-    // If it's a valid address but not in the list, it's a custom token
-    if (selectedTokenValue && isAddress(selectedTokenValue as `0x${string}`)) {
-      return {
-        address: selectedTokenValue as `0x${string}`,
-        symbol: "Custom Token",
-        name: "Custom Token",
-        decimals: 18,
-        isNative: false,
-      };
-    }
-
-    return undefined;
+    ) as SelectedToken | undefined;
   }, [tokens, selectedTokenValue]);
+
+  // Fetch custom token data if needed
+  const query = useQuery({
+    queryKey: ["customToken", selectedTokenValue, !!client, listToken],
+    queryKeyHashFn: bigintQueryHashKey,
+    queryFn: async () => {
+      if (listToken) return listToken;
+      if (
+        !client ||
+        !selectedTokenValue ||
+        !isAddress(selectedTokenValue as `0x${string}`)
+      ) {
+        throw new Error("Invalid token address or client not available");
+      }
+
+      try {
+        const tokenData = await getTokenByAddress(
+          selectedTokenValue as `0x${string}`,
+          client,
+        );
+        return tokenData as SelectedToken;
+      } catch (error) {
+        console.error("Error fetching token data:", error);
+        // Fallback to default custom token
+        return {
+          address: selectedTokenValue as `0x${string}`,
+          symbol: "Custom Token",
+          name: "Custom Token",
+          decimals: 18,
+          isNative: false,
+        } as SelectedToken;
+      }
+    },
+  });
+
+  // Return the appropriate token
+  return query;
 };

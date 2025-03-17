@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { parseEther } from "viem";
 import { useSaveLatestProof } from "@/lib/shielder/useSaveLatestProof";
 import { useLatestProof } from "@/lib/shielder/useLatestProof";
 import { useAccount } from "wagmi";
@@ -24,6 +23,7 @@ import WithdrawActionButton from "./WithdrawActionButton";
 import { useWithdraw } from "@/lib/shielder/useWithdraw";
 import { useNativeToken } from "@/lib/tokens/useNativeToken";
 import { useShielderClient } from "@/lib/shielder/useShielderClient";
+import { parseDecimals } from "@/lib/utils";
 
 const SendModal = () => {
   // State
@@ -39,7 +39,8 @@ const SendModal = () => {
   const { address: walletAddress, isConnected, chain } = useAccount();
   const nativeToken = useNativeToken();
   const tokens = [nativeToken!, ...useTokenList()];
-  const selectedToken = useSelectedToken(tokens, selectedTokenValue);
+  const { data: selectedToken } = useSelectedToken(tokens, selectedTokenValue);
+  console.log(selectedToken);
 
   const { data: shielderClient } = useShielderClient();
 
@@ -61,7 +62,7 @@ const SendModal = () => {
   };
 
   const handleSubmit = async () => {
-    const amountParsed = parseEther(amount);
+    const amountParsed = parseDecimals(amount, selectedToken?.decimals);
     try {
       await withdraw(
         amountParsed,

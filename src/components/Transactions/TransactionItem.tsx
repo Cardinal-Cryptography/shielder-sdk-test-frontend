@@ -1,5 +1,5 @@
 import { useTokenList } from "@/lib/tokens/useTokenList";
-import { formatEtherTrim, formatHash } from "@/lib/utils";
+import { formatAmountTrim, formatEtherTrim, formatHash } from "@/lib/utils";
 import { Transaction } from "./types";
 import {
   TransactionTypeIcon,
@@ -39,11 +39,11 @@ export const TransactionItem = ({
     [transaction.relayerFee, transaction.txFee],
   );
 
-  const tokenSymbol = useMemo(() => {
-    if (!transaction.token) return nativeToken?.symbol; // Default to native token
+  const token = useMemo(() => {
+    if (!transaction.token) return nativeToken; // Default to native token
 
     if (transaction.token.type === "native") {
-      return nativeToken?.symbol; // Native token is always first in the list
+      return nativeToken; // Native token is always first in the list
     } else if (transaction.token.type === "erc20") {
       // Find the matching ERC20 token by address
       const erc20Token = tokenList.find(
@@ -52,10 +52,10 @@ export const TransactionItem = ({
           t.address!.toLowerCase() ===
             (transaction.token as ERC20Token).address.toLowerCase(),
       );
-      return erc20Token?.symbol || "ERC20"; // Fallback to "ERC20" if not found
+      return erc20Token; // Fallback to "ERC20" if not found
     }
 
-    return tokenList[0].symbol; // Default fallback
+    return tokenList[0]; // Default fallback
   }, [transaction.token, tokenList, nativeToken]);
 
   return (
@@ -115,21 +115,24 @@ export const TransactionItem = ({
       </div>
       <div className="text-right">
         <div className="font-medium">
-          {formatEtherTrim(netAmount)} {tokenSymbol}
+          {formatAmountTrim(netAmount, token?.decimals)} {token?.symbol}
         </div>
         <div className="text-sm text-gray-500">
           Block #{transaction.block.toString()}
         </div>
         <div className="text-xs text-gray-400">
-          Chain Fee: {formatEtherTrim(transaction.txFee)} {tokenSymbol}
+          Chain Fee: {formatEtherTrim(transaction.txFee)} {nativeToken?.symbol}
         </div>
         {transaction.relayerFee !== undefined && (
           <div>
             <div className="text-xs text-gray-400">
-              Relayer Fee: {formatEtherTrim(relayerProfit)} {tokenSymbol}
+              Relayer Fee: {formatAmountTrim(relayerProfit, token?.decimals)}{" "}
+              {token?.symbol}
             </div>
             <div className="text-xs text-gray-400">
-              Total Fee: {formatEtherTrim(transaction.relayerFee)} {tokenSymbol}
+              Total Fee:{" "}
+              {formatAmountTrim(transaction.relayerFee, token?.decimals)}{" "}
+              {token?.symbol}
             </div>
           </div>
         )}

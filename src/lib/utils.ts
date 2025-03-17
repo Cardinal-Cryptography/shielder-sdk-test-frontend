@@ -2,7 +2,7 @@ import { Token } from "@/lib/tokens/types";
 import { initWasmWorker } from "@cardinal-cryptography/shielder-sdk-crypto-wasm";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { formatEther } from "viem";
+import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
 import {
   erc20Token,
   nativeToken,
@@ -60,6 +60,27 @@ export const formatEtherTrim = (wei: bigint) => {
   return `${whole}.${decimal.slice(0, 4)}`;
 };
 
+function formatAmount(wei: bigint, decimals: number | undefined) {
+  if (decimals === undefined) {
+    return formatEther(wei);
+  }
+  if (decimals > 18) {
+    throw new Error("Decimals greater than 18 are not supported");
+  }
+  const amount = formatUnits(wei, decimals);
+  return amount;
+}
+
+export function formatAmountTrim(wei: bigint, decimals: number | undefined) {
+  const ether = formatAmount(wei, decimals);
+  // trim to 4 decimal places
+  const [whole, decimal] = ether.split(".");
+  if (!decimal) {
+    return whole;
+  }
+  return `${whole}.${decimal.slice(0, 4)}`;
+}
+
 export const formatHash = (hash: string) => {
   return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
 };
@@ -90,3 +111,14 @@ export const bigintQueryHashKey = <T>(queryKey: T) => {
     (_, value) => (typeof value === "bigint" ? value.toString() : value),
   );
 };
+
+export function parseDecimals(amount: string, decimals: number | undefined) {
+  if (decimals === undefined) {
+    return parseEther(amount);
+  }
+  if (decimals > 18) {
+    throw new Error("Decimals greater than 18 are not supported");
+  }
+  const amountParsed = parseUnits(amount, decimals);
+  return amountParsed;
+}
