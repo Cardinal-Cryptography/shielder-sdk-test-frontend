@@ -55,6 +55,7 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
           amount + fees.totalFee,
           fees.totalFee,
           addressTo,
+          0n,
         );
       }
       refetchTokenBalance();

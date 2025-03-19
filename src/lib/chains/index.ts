@@ -17,32 +17,32 @@ export type ChainId = keyof typeof chainsByIds;
 export const shielderConfigByChainId = {
   2039: {
     // Aleph Zero Testnet
-    shielderContractAddress: "0x819Df6F66F9064A3d1FB912c12DebBce9e1E845f",
+    shielderContractAddress: "0x7126761c7E18915C891c215a23100739492B78a1",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
   421614: {
     // Arbitrum Sepolia
-    shielderContractAddress: "0x78823aE79E779C544dBff606311259ADcBBb123a",
+    shielderContractAddress: "0x5314E765c06afC06b2FC4811CF7172B386e16826",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
   84532: {
     // Base Sepolia
-    shielderContractAddress: "0x91425e66c9Ca30D1326cffe91FDddd147837aABf",
+    shielderContractAddress: "0x72B16db09D234A69a7e2df05503923A885eCe0Ea",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
   11155111: {
     // Sepolia
-    shielderContractAddress: "0x72262094b81DB737CB2ee25614d082004AFEe195",
+    shielderContractAddress: "0x9A31e096d3aFa31a50Dede2d8a8d8292dBFb0190",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
   10143: {
     // Monad Testnet
-    shielderContractAddress: "0xe4292eA13218b1885F92B25175a1d79cccb2cd01",
+    shielderContractAddress: "0xE83577c082F95b17dc0688F8Ad4Cf8C1ba5d9634",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
   57054: {
     // Sonic Testnet
-    shielderContractAddress: "0x7C848c81e1d428E952317d37008fE500b54d5B68",
+    shielderContractAddress: "0x91425e66c9Ca30D1326cffe91FDddd147837aABf",
     relayerUrl: "https://shielder-relayer-dev.test.azero.dev",
   },
 } as const;

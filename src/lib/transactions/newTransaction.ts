@@ -4,6 +4,9 @@ import { fromLocalStorage, save } from "@/lib/storage/transactions";
 import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
+import { Mutex } from "async-mutex";
+
+const mutex = new Mutex();
 
 export const useInsertTransaction = () => {
   const queryClient = useQueryClient();
@@ -19,34 +22,36 @@ export const useInsertTransaction = () => {
       if (!chainData) {
         throw new Error("Chain ID not available");
       }
-      const currentTransactions =
-        fromLocalStorage(chainData.chain.id as ChainId) ?? [];
-      // if transaction already exists, do not insert it again
-      if (currentTransactions.find((t) => t.txHash === transaction.txHash)) {
-        return currentTransactions;
-      }
-      const blockTimestampSeconds = (
-        await publicClient.getBlock({
-          blockNumber: transaction.block,
-        })
-      ).timestamp;
+      await mutex.runExclusive(async () => {
+        const currentTransactions =
+          fromLocalStorage(chainData.chain.id as ChainId) ?? [];
+        // if transaction already exists, do not insert it again
+        if (currentTransactions.find((t) => t.txHash === transaction.txHash)) {
+          return currentTransactions;
+        }
+        const blockTimestampSeconds = (
+          await publicClient.getBlock({
+            blockNumber: transaction.block,
+          })
+        ).timestamp;
 
-      const txReceipt = await publicClient.getTransactionReceipt({
-        hash: transaction.txHash,
+        const txReceipt = await publicClient.getTransactionReceipt({
+          hash: transaction.txHash,
+        });
+        const txFee = txReceipt.gasUsed * txReceipt.effectiveGasPrice;
+        const relayerFee = transaction.relayerFee;
+
+        const newTransactions = [
+          ...currentTransactions,
+          {
+            ...transaction,
+            date: parseInt((blockTimestampSeconds * 1000n).toString()),
+            txFee,
+            relayerFee,
+          },
+        ];
+        save(chainData.chain.id as ChainId, newTransactions);
       });
-      const txFee = txReceipt.gasUsed * txReceipt.effectiveGasPrice;
-      const relayerFee = transaction.relayerFee;
-
-      const newTransactions = [
-        ...currentTransactions,
-        {
-          ...transaction,
-          date: parseInt((blockTimestampSeconds * 1000n).toString()),
-          txFee,
-          relayerFee,
-        },
-      ];
-      save(chainData.chain.id as ChainId, newTransactions);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@cardinal-cryptography/shielder-sdk':
-        specifier: 0.2.0-beta.3
-        version: 0.2.0-beta.3(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
+        specifier: 0.2.0-beta.4
+        version: 0.2.0-beta.4(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
       '@cardinal-cryptography/shielder-sdk-crypto':
         specifier: 0.2.0-beta.2
         version: 0.2.0-beta.2(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
@@ -50,6 +50,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.62.3
         version: 5.62.3(react@18.3.1)
+      async-mutex:
+        specifier: ^0.5.0
+        version: 0.5.0
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -251,8 +254,8 @@ packages:
   '@cardinal-cryptography/shielder-sdk-crypto@0.2.0-beta.2':
     resolution: {integrity: sha512-7K70fRyoOK1uFF4ON+L2nO75YDcWdMnMvlK0Mb6V31aD2leeGQ/P71tjFGXQhAgGFuExQM3+RTK5LWvN/R7u4g==}
 
-  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.3':
-    resolution: {integrity: sha512-xjx4l9wCeGu4CA7FCHOLah6XizDuV8wqVZnZjIq8CkEbrDZ07DdxqSGL/lJ7HTFD8J/EM4hsxOXidrQgy5UM1w==}
+  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.4':
+    resolution: {integrity: sha512-3yMtbT6vRyyT7Cf6w7IFRj7Uk9VjGtc8KqU1QDhVokkExG0r7r3rycsrCnNWUVyIiueG0gCBMV48uW2IAk1Vqw==}
 
   '@coinbase/wallet-sdk@3.9.3':
     resolution: {integrity: sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw==}
@@ -3916,7 +3919,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.3(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.4(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@cardinal-cryptography/shielder-sdk-crypto': 0.2.0-beta.2(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
       async-mutex: 0.5.0
