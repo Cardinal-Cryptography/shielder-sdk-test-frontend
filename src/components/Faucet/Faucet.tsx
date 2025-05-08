@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { defaultTokenByChainId } from "@/lib/tokens/index";
+import { defaultTokensByChainId } from "@/lib/tokens/index";
 import { ChainId } from "@/lib/chains";
 import { useNativeTokenMint } from "@/lib/faucet/useNativeTokenMint";
 import { useErc20TokenMint } from "@/lib/faucet/useErc20TokenMint";
@@ -36,7 +36,7 @@ const Faucet = () => {
   const [selectedToken, setSelectedToken] = useState<TokenType | null>(null);
   const { isConnected, chain } = useAccount();
 
-  const defaultErc20Token = defaultTokenByChainId[chain?.id as ChainId];
+  const defaultErc20Token = defaultTokensByChainId[chain?.id as ChainId]![0];
   const { mintNativeToken, isMinting: isNativeMinting } = useNativeTokenMint();
   const { mintErc20Token, data: erc20Mint } = useErc20TokenMint({
     token: defaultErc20Token,
@@ -53,7 +53,7 @@ const Faucet = () => {
   };
 
   const handleErc20TokenMint = async () => {
-    if (!chain || !defaultTokenByChainId[chain.id as ChainId]) {
+    if (!chain || !defaultTokensByChainId[chain.id as ChainId]) {
       return;
     }
     mintErc20Token();
@@ -69,7 +69,7 @@ const Faucet = () => {
   // Check if the current chain supports any faucet
   const hasNativeFaucet = chain?.id === 2039 || false;
   const hasErc20Faucet =
-    chain && defaultTokenByChainId[chain.id as ChainId] !== undefined
+    chain && defaultTokensByChainId[chain.id as ChainId] !== undefined
       ? true
       : false;
 
@@ -114,7 +114,7 @@ const Faucet = () => {
             <NativeTokenMintView onSubmit={handleNativeTokenSubmit} />
           ) : selectedToken === "erc20" && !isMinting && chain ? (
             <Erc20TokenMintView
-              token={defaultTokenByChainId[chain.id as ChainId]!}
+              token={defaultTokensByChainId[chain.id as ChainId]![0]}
               chain={chain}
               onMint={handleErc20TokenMint}
             />

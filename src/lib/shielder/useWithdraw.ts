@@ -48,12 +48,12 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
           walletAddress!,
         );
       } else {
-        const fees = await shielderClient!.getWithdrawFees();
+        const fees = await shielderClient!.getWithdrawFees(sdkToken, 0n);
         // Use regular withdraw
         await shielderClient!.withdraw(
           sdkToken,
-          amount + fees.totalFee,
-          fees.totalFee,
+          amount + fees.fee_details.total_cost_fee_token,
+          fees,
           addressTo,
           0n,
         );

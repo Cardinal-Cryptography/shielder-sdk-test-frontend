@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
 import { useAccount } from "wagmi";
-import { defaultTokenByChainId } from "@/lib/tokens/index";
+import { defaultTokensByChainId } from "@/lib/tokens/index";
 import { ChainId } from "@/lib/chains";
 import { TokenType } from "@/components/Faucet/types";
 
@@ -48,7 +48,7 @@ export const TokenSelectionView = ({
           <div className="flex items-center">
             <Coins className="mr-2 h-5 w-5 text-green-500" />
             <span>
-              {defaultTokenByChainId[chain.id as ChainId]?.symbol} Token
+              {defaultTokensByChainId[chain.id as ChainId]![0]?.symbol} Token
             </span>
           </div>
           <span className="text-xs text-muted-foreground">No captcha</span>

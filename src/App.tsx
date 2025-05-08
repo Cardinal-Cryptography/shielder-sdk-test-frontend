@@ -12,9 +12,7 @@ import {
   unstable_connector,
 } from "wagmi";
 import { Toaster } from "@/components/ui/toaster";
-import { arbitrumSepolia, baseSepolia, sepolia } from "wagmi/chains";
-import { monadTestnet } from "@/lib/chains/monadTestnet";
-import { sonicTestnet } from "@/lib/chains/sonicTestnet";
+import { arbitrumSepolia } from "wagmi/chains";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,21 +27,10 @@ const wagmiChainConfig = createConfig(
     appName: "Shielder-sdk test",
     connectors: [injected()],
     walletConnectProjectId: "3bb69ec675f4b9c573beff23fc19ebdc",
-    chains: [
-      alephTestnet,
-      arbitrumSepolia,
-      baseSepolia,
-      sepolia,
-      monadTestnet,
-      sonicTestnet,
-    ],
+    chains: [alephTestnet, arbitrumSepolia],
     transports: {
       [alephTestnet.id]: fallback([unstable_connector(injected), http()]),
       [arbitrumSepolia.id]: fallback([unstable_connector(injected), http()]),
-      [baseSepolia.id]: fallback([unstable_connector(injected), http()]),
-      [sepolia.id]: fallback([unstable_connector(injected), http()]),
-      [monadTestnet.id]: fallback([unstable_connector(injected), http()]),
-      [sonicTestnet.id]: fallback([unstable_connector(injected), http()]),
     },
   }),
 );

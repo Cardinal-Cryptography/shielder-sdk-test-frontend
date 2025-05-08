@@ -81,7 +81,8 @@ export const useShielderClient = () => {
 
       const client = createShielderClient({
         shielderSeedPrivateKey: deriveShielderPrivateKey(
-          localSeedConfig.seedMnemonicConfig?.shielderSeedMnemonic,
+          localSeedConfig.seedMnemonicConfig
+            ?.shielderSeedMnemonic as `0x${string}`,
         ),
         chainId: BigInt(chain.id),
         publicClient,

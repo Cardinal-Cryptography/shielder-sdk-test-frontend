@@ -1,6 +1,6 @@
 import { useChain } from "@/lib/context/useChain";
 import { Token } from "@/lib/tokens/types";
-import { defaultTokenByChainId } from "@/lib/tokens";
+import { defaultTokensByChainId } from "@/lib/tokens";
 import { ChainId } from "@/lib/chains";
 import { useShielderTokens } from "@/lib/shielder/useShielderTokens";
 
@@ -13,9 +13,9 @@ export const useTokenList = (): Token[] => {
   const { chain } = chainData;
 
   // Get default token for this chain (if any)
-  const defaultToken = defaultTokenByChainId[chain.id as ChainId];
+  const defaultToken = defaultTokensByChainId[chain.id as ChainId];
 
-  const defaultTokenList = defaultToken ? [defaultToken] : [];
+  const defaultTokenList = defaultToken ?? [];
 
   if (!shielderTokens) {
     return defaultTokenList;

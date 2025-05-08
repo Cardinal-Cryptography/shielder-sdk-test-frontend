@@ -31,7 +31,7 @@ const SendModal = () => {
   const [addressTo, setAddressTo] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTokenValue, setSelectedTokenValue] = useState<string>("");
-  const [useManualWithdraw] = useState(true);
+  const [useManualWithdraw, setUseManualWithdraw] = useState(false);
 
   // Hooks
   const latestProof = useLatestProof();
@@ -40,7 +40,6 @@ const SendModal = () => {
   const nativeToken = useNativeToken();
   const tokens = [nativeToken!, ...useTokenList()];
   const { data: selectedToken } = useSelectedToken(tokens, selectedTokenValue);
-  console.log(selectedToken);
 
   const { data: shielderClient } = useShielderClient();
 
@@ -122,7 +121,7 @@ const SendModal = () => {
             <Switch
               id="manual-mode"
               checked={useManualWithdraw}
-              // onCheckedChange={setUseManualWithdraw}
+              onCheckedChange={setUseManualWithdraw}
             />
             <Label htmlFor="manual-mode">Manual transaction mode</Label>
           </div>

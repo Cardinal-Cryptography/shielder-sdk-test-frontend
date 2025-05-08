@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { useAccount } from "wagmi";
-import { defaultTokenByChainId } from "@/lib/tokens/index";
+import { defaultTokensByChainId } from "@/lib/tokens/index";
 import { ChainId } from "@/lib/chains";
 import { TokenType } from "@/components/Faucet/types";
 // MintingLoadingView Component
@@ -20,7 +20,7 @@ export const MintingLoadingView = ({
         {selectedToken === "native"
           ? "Minting native tokens..."
           : `Minting ${
-              chain && defaultTokenByChainId[chain.id as ChainId]?.symbol
+              chain && defaultTokensByChainId[chain.id as ChainId]![0]?.symbol
             } tokens...`}
       </p>
     </div>
