@@ -12,11 +12,15 @@ export const shielderConfigByChainId = {
   2039: {
     // Aleph Zero Testnet
     shielderContractAddress: "0x5B496EB83172B52885f80207426042eA21597077",
-    relayerUrl: "https://shielder-relayer-v2.test.azero.dev/azero-testnet",
+    // bundler URL
+    relayerUrl: "https://bundler.janusz.life/aleph-zero-evm-testnet",
+    paymasterAddress: "0x3aDb39085BcDF5DbC4b9FF5aA4a0337acc1798c2"
   },
   421614: {
     // Arbitrum Sepolia
     shielderContractAddress: "0xca2Ca45089Fa4E2BBef2BF26E632a8CA9CD1aFd0",
-    relayerUrl: "https://shielder-relayer-v2.test.azero.dev/arbitrum-testnet",
+    // bundler URL
+    relayerUrl: "https://bundler.janusz.life/arbitrum-sepolia",
+    paymasterAddress: "0xtodo",
   },
 } as const;

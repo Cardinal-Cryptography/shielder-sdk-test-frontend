@@ -36,7 +36,7 @@ const Faucet = () => {
   const [selectedToken, setSelectedToken] = useState<TokenType | null>(null);
   const { isConnected, chain } = useAccount();
 
-  const defaultErc20Token = defaultTokensByChainId[chain?.id as ChainId]![0];
+  const defaultErc20Token = defaultTokensByChainId[chain?.id as ChainId]?.at(0);
   const { mintNativeToken, isMinting: isNativeMinting } = useNativeTokenMint();
   const { mintErc20Token, data: erc20Mint } = useErc20TokenMint({
     token: defaultErc20Token,

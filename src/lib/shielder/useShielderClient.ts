@@ -1,10 +1,7 @@
 import { useLocalSeed } from "@/lib/context/useLocalSeed";
 import useWasm from "@/lib/context/useWasm";
 import { useInsertTransaction } from "@/lib/transactions/newTransaction";
-import {
-  createShielderClient,
-  ShielderTransaction,
-} from "@cardinal-cryptography/shielder-sdk";
+import { ShielderTransaction } from "@cardinal-cryptography/shielder-sdk";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { mnemonicToAccount } from "viem/accounts";
 import { sha256 } from "viem";
@@ -16,6 +13,7 @@ import { ChainId } from "@/lib/chains";
 import { fromLocalStorage } from "@/lib/storage/shielderClient";
 import { useTransactions } from "@/lib/transactions/useTransactions";
 import { usePublicClient } from "wagmi";
+import { createShielderClientWithShielderPaymasterRelayer } from "../bundler/createShielderClientShielderPaymasterRelayer";
 
 const SHIELDER_PRIVATE_ACCOUNT_DERIVATION_PATH = {
   accountIndex: 603302,
@@ -79,7 +77,8 @@ export const useShielderClient = () => {
         throw new Error("Relayer URL not available");
       }
 
-      const client = createShielderClient({
+      const client = createShielderClientWithShielderPaymasterRelayer({
+        paymasterAddress: shielderConfig.paymasterAddress,
         shielderSeedPrivateKey: deriveShielderPrivateKey(
           localSeedConfig.seedMnemonicConfig
             ?.shielderSeedMnemonic as `0x${string}`,
