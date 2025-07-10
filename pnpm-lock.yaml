@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@cardinal-cryptography/shielder-sdk':
-        specifier: 0.2.0-beta.9
-        version: 0.2.0-beta.9(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
+        specifier: 0.2.0-beta.10
+        version: 0.2.0-beta.10(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)
       '@cardinal-cryptography/shielder-sdk-crypto':
         specifier: 0.2.0-beta.4
         version: 0.2.0-beta.4(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
@@ -254,8 +254,8 @@ packages:
   '@cardinal-cryptography/shielder-sdk-crypto@0.2.0-beta.4':
     resolution: {integrity: sha512-nLkRnOCwl06mXVUHjbm1yVjumiUzlX7MLwWgOBrJvid77dbY0zOw8nFxxfcyQjxyKsoJgp0Mr/rHBEq6T5caOg==}
 
-  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.9':
-    resolution: {integrity: sha512-+5aI4xvaJ/0txnmgeUxjYW8YjFRO8qPn+pxKxg9C3vXae8YowG9RGCCMxWsxqsXT8J2WIEmPDVSYzGANLJqzqA==}
+  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.10':
+    resolution: {integrity: sha512-H3SDv9hG90SLXdHin+pg7NgKDFa8ljA32FhP6DW8GXQXagpq6Ne6MSDD4FCjmffkwE/NFSQe0BmQDGEw1pXJRQ==}
 
   '@coinbase/wallet-sdk@3.9.3':
     resolution: {integrity: sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw==}
@@ -3919,7 +3919,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.9(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+  '@cardinal-cryptography/shielder-sdk@0.2.0-beta.10(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@cardinal-cryptography/shielder-sdk-crypto': 0.2.0-beta.4(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.0)
       async-mutex: 0.5.0
