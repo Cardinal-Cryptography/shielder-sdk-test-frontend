@@ -110,6 +110,28 @@ export const useShielderClient = () => {
               description: `Proof generated in ${calldata.provingTimeMillis}ms`,
             });
           },
+          onAccountNotOnChain: async (error, stage, operation) => {
+            toast({
+              title: "Account not on chain",
+              description: `Account not found on chain during ${stage} for operation ${operation}. Please ensure the account is funded and try again.`,
+              variant: "destructive",
+            });
+            console.error(
+              `Account not found on chain during ${stage} for operation ${operation}:`,
+              error,
+            );
+          },
+          onSdkOutdated: async (error, stage, operation) => {
+            toast({
+              title: "SDK Outdated",
+              description: `The Shielder SDK is outdated. Please update to the latest version to continue using the service.`,
+              variant: "destructive",
+            });
+            console.error(
+              `Shielder SDK is outdated during ${stage} for operation ${operation}:`,
+              error,
+            );
+          },
         },
       });
       // Sync the native token
