@@ -1,22 +1,15 @@
-import { alephTestnet } from "@/lib/chains/alephTestnet";
-import { arbitrumSepolia } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
 export const chainsByIds = {
-  2039: alephTestnet,
-  421614: arbitrumSepolia,
+  84532: baseSepolia,
 } as const;
 
 export type ChainId = keyof typeof chainsByIds;
 
 export const shielderConfigByChainId = {
-  2039: {
-    // Aleph Zero Testnet
-    shielderContractAddress: "0x5B496EB83172B52885f80207426042eA21597077",
-    relayerUrl: "https://shielder-relayer-v2.test.azero.dev/azero-testnet",
-  },
-  421614: {
-    // Arbitrum Sepolia
-    shielderContractAddress: "0xca2Ca45089Fa4E2BBef2BF26E632a8CA9CD1aFd0",
-    relayerUrl: "https://shielder-relayer-v2.test.azero.dev/arbitrum-testnet",
+  84532: {
+    // Base Sepolia
+    shielderContractAddress: "0x235FE8FaeC7716869fB1ABA6891C596e23bE122c",
+    relayerUrl: "https://base-testnet-shielder-relayer-v3.test.blanksquare.dev",
   },
 } as const;

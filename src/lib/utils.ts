@@ -30,7 +30,7 @@ export const wasmCryptoClientRead = (async () => {
   const withdrawParams = await fetchArrayBuffer(withdrawParamsUrl);
   const withdrawPk = await fetchArrayBuffer(withdrawPkUrl);
   return initWasmWorker(
-    navigator.hardwareConcurrency,
+    "multi",
     {
       paramsBuf: newAccountParams,
       pkBuf: newAccountPk,

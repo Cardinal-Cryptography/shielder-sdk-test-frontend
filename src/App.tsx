@@ -2,7 +2,6 @@ import WasmProvider from "@/lib/providers/WasmProvider";
 import DashboardInterface from "./components/DashboardInterface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getDefaultConfig, ConnectKitProvider } from "connectkit";
-import { alephTestnet } from "@/lib/chains/alephTestnet";
 import {
   WagmiProvider,
   createConfig,
@@ -12,7 +11,7 @@ import {
   unstable_connector,
 } from "wagmi";
 import { Toaster } from "@/components/ui/toaster";
-import { arbitrumSepolia } from "wagmi/chains";
+import { baseSepolia } from "wagmi/chains";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,10 +26,9 @@ const wagmiChainConfig = createConfig(
     appName: "Shielder-sdk test",
     connectors: [injected()],
     walletConnectProjectId: "3bb69ec675f4b9c573beff23fc19ebdc",
-    chains: [alephTestnet, arbitrumSepolia],
+    chains: [baseSepolia],
     transports: {
-      [alephTestnet.id]: fallback([unstable_connector(injected), http()]),
-      [arbitrumSepolia.id]: fallback([unstable_connector(injected), http()]),
+      [baseSepolia.id]: fallback([unstable_connector(injected), http()]),
     },
   }),
 );

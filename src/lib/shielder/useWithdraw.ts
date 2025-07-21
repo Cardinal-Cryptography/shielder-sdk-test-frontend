@@ -30,11 +30,13 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
         ? nativeToken()
         : erc20Token(token.address as `0x${string}`);
 
+      const protocolFee = await shielderClient!.getProtocolWithdrawFee(amount);
+
       if (useManualWithdraw) {
         // Use withdrawManual for manual transaction handling
         await shielderClient!.withdrawManual(
           sdkToken,
-          amount,
+          protocolFee.amount,
           addressTo,
           async (params) => {
             const txHash = await sendTransactionAsync!({
@@ -46,16 +48,20 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
             return txHash;
           },
           walletAddress!,
+          protocolFee.protocolFee, // protocol fee
+          new Uint8Array(),
         );
       } else {
-        const fees = await shielderClient!.getWithdrawFees(sdkToken, 0n);
+        const relayerFees = await shielderClient!.getRelayerFees(sdkToken, 0n);
         // Use regular withdraw
         await shielderClient!.withdraw(
           sdkToken,
-          amount + fees.fee_details.total_cost_fee_token,
-          fees,
+          protocolFee.amount + relayerFees.fee_details.total_cost_fee_token,
+          relayerFees,
           addressTo,
           0n,
+          protocolFee.protocolFee, // protocol fee
+          new Uint8Array(),
         );
       }
       refetchTokenBalance();

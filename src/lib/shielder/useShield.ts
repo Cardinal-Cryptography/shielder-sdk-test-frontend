@@ -26,9 +26,11 @@ export const useShield = ({ token }: { token: Token | undefined }) => {
         ? nativeToken()
         : erc20Token(token.address as `0x${string}`);
 
+      const protocolFee = await shielderClient!.getProtocolShieldFee(amount);
+
       await shielderClient!.shield(
         sdkToken,
-        amount,
+        protocolFee.amount,
         async (params) => {
           const txHash = await sendTransactionAsync!({
             ...params,
@@ -39,6 +41,8 @@ export const useShield = ({ token }: { token: Token | undefined }) => {
           return txHash;
         },
         walletAddress!,
+        protocolFee.protocolFee, // protocol fee
+        new Uint8Array(),
       );
       refetchTokenBalance();
     } catch (e) {
