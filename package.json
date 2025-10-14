@@ -10,7 +10,7 @@
     "preview": "tsx create-dotenv.ts && vite preview"
   },
   "dependencies": {
-    "@cardinal-cryptography/shielder-sdk": "0.3.0-rc.1",
+    "@cardinal-cryptography/shielder-sdk": "0.3.0-rc.2",
     "@cardinal-cryptography/shielder-sdk-crypto": "0.3.0-rc.1",
     "@cardinal-cryptography/shielder-sdk-crypto-wasm": "0.3.0-rc.1",
     "@marsidev/react-turnstile": "^1.1.0",
@@ -27,7 +27,7 @@
     "async-mutex": "^0.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "connectkit": "^1.8.2",
+    "connectkit": "^1.9.1",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

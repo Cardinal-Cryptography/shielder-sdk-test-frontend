@@ -30,7 +30,7 @@ export const wasmCryptoClientRead = (async () => {
   const withdrawParams = await fetchArrayBuffer(withdrawParamsUrl);
   const withdrawPk = await fetchArrayBuffer(withdrawPkUrl);
   return initWasmWorker(
-    "multi",
+    "single",
     {
       paramsBuf: newAccountParams,
       pkBuf: newAccountPk,

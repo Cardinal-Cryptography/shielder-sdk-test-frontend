@@ -30,9 +30,9 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
         ? nativeToken()
         : erc20Token(token.address as `0x${string}`);
 
-      const protocolFee = await shielderClient!.getProtocolWithdrawFee(amount);
-
       if (useManualWithdraw) {
+        const protocolFee =
+          await shielderClient!.getProtocolWithdrawFee(amount);
         // Use withdrawManual for manual transaction handling
         await shielderClient!.withdrawManual(
           sdkToken,
@@ -53,10 +53,15 @@ export const useWithdraw = ({ token }: { token: Token | undefined }) => {
         );
       } else {
         const relayerFees = await shielderClient!.getRelayerFees(sdkToken, 0n);
+
+        const protocolFee = await shielderClient!.getProtocolWithdrawFee(
+          amount + relayerFees.fee_details.total_cost_fee_token,
+        );
+
         // Use regular withdraw
         await shielderClient!.withdraw(
           sdkToken,
-          protocolFee.amount + relayerFees.fee_details.total_cost_fee_token,
+          protocolFee.amount,
           relayerFees,
           addressTo,
           0n,
